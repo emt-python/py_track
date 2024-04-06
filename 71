@@ -1,0 +1,152 @@
+file is /home/lyuze/workspace/py_track/obj_dump.txt, sample dur is 200000
+slow peeking...
+inspecting generation 0
+cur GC generation size: 401
+inspecting generation 1
+cur GC generation size: 1402
+inspecting generation 2
+cur GC generation size: 5641
+slow: 0.693 second, size is 1452238
+fast 1, # all: 729072, bk record time: 1.260 second, changed size: 391080
+fast 2, # all: 729072, bk record time: 0.266 second, changed size: 362472
+fast 3, # all: 728793, bk record time: 0.167 second, actual sleep time: 33004 us
+changed size: 362470
+fast 4, # all: 728793, bk record time: 0.165 second, actual sleep time: 34535 us
+changed size: 362426
+fast 5, # all: 728793, bk record time: 0.165 second, actual sleep time: 34628 us
+changed size: 362470
+fast 6, # all: 728793, bk record time: 0.166 second, actual sleep time: 33802 us
+changed size: 362441
+fast 7, # all: 728793, bk record time: 0.166 second, actual sleep time: 34038 us
+changed size: 362416
+fast 8, # all: 728793, bk record time: 0.166 second, actual sleep time: 34445 us
+changed size: 362446
+fast 9, # all: 728793, bk record time: 0.167 second, actual sleep time: 33222 us
+changed size: 362427
+fast 10, # all: 728793, bk record time: 0.166 second, actual sleep time: 33557 us
+changed size: 362443
+fast 11, # all: 728793, bk record time: 0.167 second, actual sleep time: 33226 us
+changed size: 362434
+fast 12, # all: 728793, bk record time: 0.166 second, actual sleep time: 33876 us
+changed size: 362457
+fast 13, # all: 728793, bk record time: 0.166 second, actual sleep time: 33891 us
+changed size: 362444
+fast 14, # all: 728793, bk record time: 0.167 second, actual sleep time: 32785 us
+changed size: 362481
+fast 15, # all: 728793, bk record time: 0.167 second, actual sleep time: 32547 us
+changed size: 362491
+fast 16, # all: 728793, bk record time: 0.166 second, actual sleep time: 33825 us
+changed size: 362451
+fast 17, # all: 728793, bk record time: 0.168 second, actual sleep time: 32336 us
+changed size: 362466
+fast 18, # all: 728793, bk record time: 0.167 second, actual sleep time: 32924 us
+changed size: 362466
+fast 19, # all: 728793, bk record time: 0.167 second, actual sleep time: 33451 us
+changed size: 362434
+fast 20, # all: 728793, bk record time: 0.166 second, actual sleep time: 33594 us
+slow peeking...
+inspecting generation 0
+cur GC generation size: 401
+inspecting generation 1
+cur GC generation size: 1402
+inspecting generation 2
+cur GC generation size: 5641
+slow: 0.687 second, size is 1515630
+fast 1, # all: 760768, bk record time: 1.270 second, changed size: 0
+fast 2, # all: 760768, bk record time: 0.262 second, changed size: 140737220374832
+fast 3, # all: 760489, bk record time: 0.177 second, actual sleep time: 22926 us
+changed size: 362438
+fast 4, # all: 760489, bk record time: 0.175 second, actual sleep time: 24841 us
+changed size: 140737220374815
+fast 5, # all: 760489, bk record time: 0.175 second, actual sleep time: 25002 us
+changed size: 362423
+fast 6, # all: 760489, bk record time: 0.175 second, actual sleep time: 24801 us
+changed size: 140737220374810
+fast 7, # all: 760489, bk record time: 0.174 second, actual sleep time: 25506 us
+changed size: 362419
+fast 8, # all: 760489, bk record time: 0.176 second, actual sleep time: 24275 us
+changed size: 140737220374737
+fast 9, # all: 760489, bk record time: 0.176 second, actual sleep time: 24082 us
+changed size: 362445
+fast 10, # all: 760489, bk record time: 0.177 second, actual sleep time: 23469 us
+changed size: 140737220374793
+fast 11, # all: 760489, bk record time: 0.175 second, actual sleep time: 24609 us
+changed size: 362446
+fast 12, # all: 760489, bk record time: 0.177 second, actual sleep time: 23018 us
+changed size: 140737220374760
+fast 13, # all: 760489, bk record time: 0.176 second, actual sleep time: 23815 us
+changed size: 362386
+fast 14, # all: 760489, bk record time: 0.177 second, actual sleep time: 22938 us
+changed size: 140737220374772
+fast 15, # all: 760489, bk record time: 0.176 second, actual sleep time: 23986 us
+changed size: 362406
+fast 16, # all: 760489, bk record time: 0.178 second, actual sleep time: 22427 us
+changed size: 140737220374755
+fast 17, # all: 760489, bk record time: 0.176 second, actual sleep time: 24151 us
+changed size: 362411
+fast 18, # all: 760489, bk record time: 0.176 second, actual sleep time: 23734 us
+changed size: 140737220374778
+fast 19, # all: 760489, bk record time: 0.176 second, actual sleep time: 23994 us
+changed size: 362424
+fast 20, # all: 760489, bk record time: 0.176 second, actual sleep time: 24217 us
+slow peeking...
+inspecting generation 0
+cur GC generation size: 401
+inspecting generation 1
+cur GC generation size: 1402
+inspecting generation 2
+cur GC generation size: 5641
+slow: 0.733 second, size is 1578690
+fast 1, # all: 792298, bk record time: 1.279 second, changed size: 394130
+fast 2, # all: 792298, bk record time: 0.260 second, changed size: 362391
+fast 3, # all: 791962, bk record time: 0.172 second, actual sleep time: 28019 us
+changed size: 362396
+fast 4, # all: 791962, bk record time: 0.169 second, actual sleep time: 30503 us
+changed size: 362404
+fast 5, # all: 791962, bk record time: 0.170 second, actual sleep time: 30163 us
+changed size: 362397
+fast 6, # all: 791962, bk record time: 0.170 second, actual sleep time: 30228 us
+changed size: 362449
+fast 7, # all: 791962, bk record time: 0.171 second, actual sleep time: 29246 us
+changed size: 362441
+fast 8, # all: 791962, bk record time: 0.171 second, actual sleep time: 29193 us
+changed size: 362447
+fast 9, # all: 791962, bk record time: 0.172 second, actual sleep time: 28323 us
+changed size: 362458
+fast 10, # all: 791962, bk record time: 0.172 second, actual sleep time: 28330 us
+changed size: 362420
+fast 11, # all: 791962, bk record time: 0.172 second, actual sleep time: 28055 us
+changed size: 362454
+fast 12, # all: 791962, bk record time: 0.171 second, actual sleep time: 28555 us
+changed size: 362459
+fast 13, # all: 791962, bk record time: 0.172 second, actual sleep time: 28222 us
+changed size: 362455
+fast 14, # all: 791962, bk record time: 0.172 second, actual sleep time: 27611 us
+changed size: 362419
+fast 15, # all: 791962, bk record time: 0.171 second, actual sleep time: 29074 us
+changed size: 362414
+fast 16, # all: 791962, bk record time: 0.171 second, actual sleep time: 28653 us
+changed size: 362454
+fast 17, # all: 791962, bk record time: 0.172 second, actual sleep time: 28085 us
+changed size: 362433
+fast 18, # all: 791962, bk record time: 0.172 second, actual sleep time: 28348 us
+changed size: 362456
+fast 19, # all: 791962, bk record time: 0.171 second, actual sleep time: 28522 us
+changed size: 362455
+fast 20, # all: 791962, bk record time: 0.171 second, actual sleep time: 29201 us
+slow peeking...
+inspecting generation 0
+cur GC generation size: 401
+inspecting generation 1
+cur GC generation size: 1402
+inspecting generation 2
+cur GC generation size: 5641
+slow: 0.764 second, size is 1641774
+fast 1, # all: 823840, bk record time: 1.291 second, Traceback (most recent call last):
+  File "/home/lyuze/workspace/py_track/./test_get_gc_count_list.py", line 173, in <module>
+    matrix_multiply()
+  File "/home/lyuze/workspace/py_track/./test_get_gc_count_list.py", line 94, in matrix_multiply
+    if get_refcnt == True:
+       ^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
+Py_FinalizeEx called
