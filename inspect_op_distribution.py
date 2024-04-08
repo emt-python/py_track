@@ -50,5 +50,5 @@ y_rela_all = (org_df_sorted['addr'].max() -
 x_min_all = org_df_sorted['timestamp'].min()
 y_min_all = org_df_sorted['addr'].min()
 print("y_min_all:", y_min_all)
-plot_scatter_map("bm_tornado_http_140.png", sorted_file_path,
+plot_scatter_map("bm_meteor_contest.png", sorted_file_path,
                  x_rela_all, y_rela_all, x_min_all, y_min_all)

@@ -15,12 +15,13 @@ modified by Justin Peel
 Modified by Christopher Sean Forgeron
 """
 
-import gc_count_module
+import sys
+if sys.executable == "/home/lyuze/workspace/cpython/python":
+    import gc_count_module
 import bisect
 import re
 
 # import pyperf
-import sys
 import time
 
 
@@ -235,7 +236,7 @@ def run_benchmarks_syn(seq):
     for f, r in SUBST:
         temp_seq = seq.replace(f, r)
         seq = temp_seq + temp_seq  # Duplicate the sequence after replacement
-        time.sleep(0.5)
+        # time.sleep(0.5)
     return results
 
 
@@ -297,7 +298,7 @@ if __name__ == '__main__':
 
     # runner.bench_time_func('regex_dna', bench_regex_dna, seq, expected_res)
     # gc_count_module.start_count_gc_list(
-    #     250_000, "/home/lyuze/workspace/py_track/obj_dump.txt", 1, 10, 1_000_000)
+    #     250_000, "/home/lyuze/workspace/py_track/obj_dump.txt", 0, 10, 1_000_000)
     bench_regex_dna(num_iter, seq, expected_res)
     # gc_count_module.close_count_gc_list()
     print("compute time: {:.2f}".format(time.time() - init_finish))

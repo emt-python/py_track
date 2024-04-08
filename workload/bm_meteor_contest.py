@@ -7,8 +7,9 @@ http://benchmarksgame.alioth.debian.org/
 
 contributed by Daniel Nanz, 2008-08-21
 """
-
-import gc_count_module
+import sys
+if sys.executable == "/home/lyuze/workspace/cpython/python":
+    import gc_count_module
 import time
 from bisect import bisect
 
@@ -217,7 +218,7 @@ def main():
 
 
 if __name__ == "__main__":
-    # gc_count_module.start_count_gc_list(
-    #     250_000, "/home/lyuze/workspace/py_track/obj_dump.txt", 0, 10, 1_000_000)
+    gc_count_module.start_count_gc_list(
+        250_000, "/home/lyuze/workspace/py_track/obj_dump.txt", 0, 10, 1_000_000)
     main()
-    # gc_count_module.close_count_gc_list()
+    gc_count_module.close_count_gc_list()

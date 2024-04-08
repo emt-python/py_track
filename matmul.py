@@ -1,7 +1,7 @@
 import sys
 import random
 import time
-import gc_count_module
+# import gc_count_module
 import gc
 import dis
 import string
@@ -62,11 +62,11 @@ def trace(frame, event, arg):
 
 
 gc.collect()
-gc_count_module.start_count_gc_list(
-    250_000, "/home/lyuze/workspace/py_track/obj_dump.txt", 0, 10, 1_000_000)
+# gc_count_module.start_count_gc_list(
+#     250_000, "/home/lyuze/workspace/py_track/obj_dump.txt", 0, 10, 1_000_000)
 # sys.settrace(trace)
 matrix_multiply()
-gc_count_module.close_count_gc_list()
+# gc_count_module.close_count_gc_list()
 # sys.settrace(None)
 
 # for opcode, count in opcode_counts.items():
