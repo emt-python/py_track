@@ -8,15 +8,13 @@ http://benchmarksgame.alioth.debian.org/
 contributed by Daniel Nanz, 2008-08-21
 """
 import sys
-if sys.executable == "/home/lyuze/workspace/cpython/python":
-    import gc_count_module
 import time
 from bisect import bisect
 
 
 SOLVE_ARG = 60
 
-WIDTH, HEIGHT = 500, 100
+WIDTH, HEIGHT = 500, 500
 DIR_NO = 6
 S, E = WIDTH * HEIGHT, 2
 SE = S + (E / 2)
@@ -218,7 +216,4 @@ def main():
 
 
 if __name__ == "__main__":
-    gc_count_module.start_count_gc_list(
-        250_000, "/home/lyuze/workspace/py_track/obj_dump.txt", 0, 10, 1_000_000)
     main()
-    gc_count_module.close_count_gc_list()

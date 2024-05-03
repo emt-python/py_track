@@ -3,17 +3,28 @@
 
 # import math
 
-# from numpy import linalg as LA
-# import gc_count_module
+import sys
 import gc
 import time
 
 
-def doit1(x):
+def doit_wo_list(x):
     y = 1
-    x = [i*i for i in range(0, 4000000)][99999]
-    y1 = [i*i for i in range(0, 8200000)][199999]
-    z1 = [i for i in range(0, 6000000)][299999]
+    x = [i*i for i in range(0, 80000000)][99999]
+    y1 = [i*i for i in range(0, 80000000)][199999]
+    z1 = [i for i in range(0, 8000000)][299999]
+    z = x * y * y1 * z1
+    return z
+
+
+def doit_w_list(x):
+    y = 1
+    x_ = [i*i for i in range(0, 4000000)]
+    x = x_[99999]
+    y1_ = [i*i for i in range(0, 8200000)]
+    y1 = y1_[199999]
+    z1_ = [i for i in range(0, 6000000)]
+    z1 = z1_[299999]
     z = x * y * y1 * z1
     return z
 
@@ -36,19 +47,19 @@ def doit3(x):
 
 def stuff():
     x = 1.01
-    for i in range(1, 5):
+    for i in range(1, 2):
         print(i)
         for j in range(1, 10):
-            x = doit1(x)
+            x = doit_wo_list(x)
             # x = doit2(x)
             # x = doit3(x)
     return x
 
 
 gc.collect()
-# gc_count_module.start_count_gc_list(
-#     250_000, "/home/lyuze/workspace/py_track/obj_dump.txt", 0, 10, 1_000_000)
+# sys.setswitchinterval(1)
+# gc.disable()
+# sys.setswitchinterval(0.1)
 start = time.time()
 stuff()
-print("latency: {:.2f}".format(time.time() - start))
-# gc_count_module.close_count_gc_list()
+print("Compute time: {:.2f}".format(time.time() - start))

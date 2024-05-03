@@ -21,6 +21,7 @@ the layout & logic from the original. (Ugh.)
 
 # The JS variant implements "OrderedCollection", which basically completely
 # overlaps with ``list``. So we'll cheat. :D
+import gc
 import time
 
 
@@ -628,9 +629,8 @@ def delta_blue(n):
     chain_test(n)
     # projection_test(n)
 
-
 if __name__ == "__main__":
-    n = 2000000
+    n = 8000000
     start_time = time.time()
     delta_blue(n)
     elapsed_time = time.time() - start_time

@@ -1,3 +1,4 @@
+import gc
 import sys
 import time
 from sqlalchemy.sql import func
@@ -8,8 +9,6 @@ from sqlalchemy.orm import relationship, sessionmaker
 import random
 from faker import Faker
 PYPPER_BIN = "/home/lyuze/workspace/cpython/python"
-if (sys.executable == PYPPER_BIN):
-    import gc_count_module
 
 Base = declarative_base()
 fake = Faker()
@@ -59,10 +58,7 @@ Base.metadata.create_all(engine)
 
 Session = sessionmaker(bind=engine)
 session = Session()
-
-if (sys.executable == PYPPER_BIN):
-    gc_count_module.start_count_gc_list(
-        250_000, "/home/lyuze/workspace/py_track/obj_dump.txt", 0, 10, 1_000_000)
+gc.disable()
 start_adding = time.time()
 # Create Publishers
 for _ in range(50000):
@@ -78,14 +74,15 @@ add_time = time.time() - start_adding
 print(f"Creating data time: {add_time:.2f} seconds", file=sys.stderr)
 
 # Create Books and randomly assign authors and a publisher to each
+# sys.setswitchinterval(0.0001)
 start_assigning = time.time()
 publishers = session.query(Publisher).all()
 authors = session.query(Author).all()
-for _ in range(50000):
+for _ in range(80000):
     book = Book(
         title=fake.sentence(nb_words=4),
         publisher=random.choice(publishers),
-        authors=random.sample(authors, k=random.randint(1, 3))
+        authors=random.sample(authors, k=random.randint(1, 100))
     )
     session.add(book)
 session.commit()
@@ -93,24 +90,22 @@ assign_time = time.time() - start_assigning
 print(f"Assign time: {assign_time:.2f} seconds", file=sys.stderr)
 
 
-start_query = time.time()
-query = session.query(
-    Publisher.name,
-    func.count(author_book.c.author_id).label('unique_authors')
-).join(
-    Book, Publisher.id == Book.publisher_id
-).join(
-    author_book, Book.id == author_book.c.book_id
-).group_by(
-    Publisher.id
-).order_by(
-    func.count(author_book.c.author_id).desc()
-)
+# start_query = time.time()
+# query = session.query(
+#     Publisher.name,
+#     func.count(author_book.c.author_id).label('unique_authors')
+# ).join(
+#     Book, Publisher.id == Book.publisher_id
+# ).join(
+#     author_book, Book.id == author_book.c.book_id
+# ).group_by(
+#     Publisher.id
+# ).order_by(
+#     func.count(author_book.c.author_id).desc()
+# )
 
-query_time = time.time() - start_query
-print(f"Query time: {query_time:.2f} seconds", file=sys.stderr)
-if (sys.executable == PYPPER_BIN):
-    gc_count_module.close_count_gc_list()
+# query_time = time.time() - start_query
+# print(f"Query time: {query_time:.2f} seconds", file=sys.stderr)
 
 # for name, count in query:
 #     print(f"Publisher: {name}, Unique Authors: {count}")

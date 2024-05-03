@@ -1,10 +1,10 @@
 import sys
 import random
 import time
-# import gc_count_module
 import gc
 import dis
 import string
+import gc_count_module
 
 
 def generate_random_string(max_length):
@@ -19,21 +19,22 @@ def generate_matrix(size, max_str_length):
 
 def matrix_multiply():
     random.seed(1)
-    matrix_size = 1000
+    matrix_size = 800
     # max_str_length = 5
     # matrix_A = generate_matrix(matrix_size, max_str_length)
     # matrix_B = generate_matrix(matrix_size, max_str_length)
-    matrix_A = random.sample(range(30000, 4000000), matrix_size * matrix_size)
+    matrix_A = random.sample(range(30000, 5000000), matrix_size * matrix_size)
     matrix_A = [matrix_A[i:i+matrix_size]
                 for i in range(0, len(matrix_A), matrix_size)]
-    matrix_B = random.sample(range(4000000, 8000000), matrix_size * matrix_size)
+    matrix_B = random.sample(range(5000000, 9400000),
+                             matrix_size * matrix_size)
     matrix_B = [matrix_B[i:i+matrix_size]
                 for i in range(0, len(matrix_B), matrix_size)]
 
     result = [[0 for _ in range(matrix_size)] for _ in range(matrix_size)]
 
     # gc_count_module.start_count_gc_list(
-    #     250_000, "/home/lyuze/workspace/py_track/obj_dump.txt", 0, 10, 1_000_000)
+    #     250_000, "/home/lyuze/workspace/py_track/obj_dump.txt", 0, 6, 1_000_000)
     start = time.time()
     for i in range(matrix_size):
         for j in range(matrix_size):
@@ -66,6 +67,7 @@ gc.collect()
 #     250_000, "/home/lyuze/workspace/py_track/obj_dump.txt", 0, 10, 1_000_000)
 # sys.settrace(trace)
 matrix_multiply()
+time.sleep(1)
 # gc_count_module.close_count_gc_list()
 # sys.settrace(None)
 
