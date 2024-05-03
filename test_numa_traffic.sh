@@ -22,10 +22,10 @@ gen_bw() {
     sleep 1
 
     python3 ./process_numa_fp.py $MEM_FP_FILE $profile_name
-    python3 ./process_numa_mem.py $BW_PCM_FILE $profile_name bw
-    echo "gen bw,fp done"
-    gnuplot -e "output_file='./traces/${profile_name}_bw.png'; input_file='./traces/${profile_name}_bw.csv'; wl_title='Memory Bandwidth'" ./plot_bw.gnuplot
-    echo "plot bw done"
+    # python3 ./process_numa_mem.py $BW_PCM_FILE $profile_name bw
+    # echo "gen bw,fp done"
+    # gnuplot -e "output_file='./traces/${profile_name}_bw.png'; input_file='./traces/${profile_name}_bw.csv'; wl_title='Memory Bandwidth'" ./plot_bw.gnuplot
+    # echo "plot bw done"
 }
 
 if [ "$env" = "cxl" ]; then
