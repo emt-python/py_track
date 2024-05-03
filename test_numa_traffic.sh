@@ -44,8 +44,8 @@ fi
 #     cmd_prefix="numactl --cpunodebind 0 --interleave all -- "
 echo "running in $env"
 echo 1 | sudo tee /proc/sys/vm/drop_caches
-sleep 10 &
-# $cmd_prefix $python_bin /home/lyuze/workspace/py_track/workload/$workload_file $workload_arg &
+# sleep 10 &
+$cmd_prefix $python_bin /home/lyuze/workspace/py_track/workload/$workload_file $workload_arg &
 
 check_pid=$!
 gen_bw $check_pid

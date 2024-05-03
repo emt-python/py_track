@@ -6,3 +6,4 @@
 *.old
 *.db
 out.txt
+traces/*
