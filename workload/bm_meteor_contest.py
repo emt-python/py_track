@@ -7,6 +7,7 @@ http://benchmarksgame.alioth.debian.org/
 
 contributed by Daniel Nanz, 2008-08-21
 """
+import gc_count_module
 import sys
 import time
 from bisect import bisect
@@ -203,11 +204,14 @@ def bench_meteor_contest(loops, board, pieces, solve_arg, fps, se_nh):
 def main():
 
     start_time = time.time()
+    gc_count_module.start_count_gc_list(
+        250_000, "/home/lyuze/workspace/py_track/obj_dump.txt", 0, 6, 10_000_000)
     for i in range(1):
         board, cti, pieces = get_puzzle(WIDTH, HEIGHT)
         fps = get_footprints(board, cti, pieces)
         # se_nh = get_senh(board, cti)
     elapsed_time = time.time() - start_time
+    gc_count_module.close_count_gc_list()
     print(f"Compute time: {elapsed_time:.2f} seconds")
 
     # solve_arg = SOLVE_ARG

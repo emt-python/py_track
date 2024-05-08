@@ -13,12 +13,12 @@ gen_bw() {
     BW_PCM_FILE=./bw_raw.csv
     MEM_FP_FILE=./fp_raw.csv
     rm -rf $MEM_FP_FILE
-    sudo pcm-memory 0.1 -csv=$BW_PCM_FILE -silent &
+    # sudo pcm-memory 0.1 -csv=$BW_PCM_FILE -silent &
     while [ -d "/proc/${check_pid}" ]; do
         numactl -H | grep free >>$MEM_FP_FILE
         sleep 0.1
     done
-    sudo pkill -9 pcm-memory >/dev/null 2>&1
+    # sudo pkill -9 pcm-memory >/dev/null 2>&1
     sleep 1
 
     python3 ./process_numa_fp.py $MEM_FP_FILE $profile_name
@@ -31,9 +31,9 @@ gen_bw() {
 if [ "$env" = "cxl" ]; then
     cmd_prefix="numactl --cpunodebind 0 --membind 1 -- "
 elif [ "$env" = "base" ]; then
-    cmd_prefix="numactl  --cpunodebind 0 --membind 0 -- "
+    cmd_prefix="numactl --cpunodebind 0 --membind 0 -- "
 elif [ "$env" = "org" ]; then
-    cmd_prefix=""
+    cmd_prefix="numactl --cpunodebind 0 -- "
 else
     echo "wrong env, pls try again!"
     exit 1

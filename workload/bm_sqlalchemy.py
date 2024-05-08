@@ -1,3 +1,4 @@
+import os
 import gc
 import sys
 import time
@@ -8,11 +9,13 @@ from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 import random
 from faker import Faker
-PYPPER_BIN = "/home/lyuze/workspace/cpython/python"
+import gc_count_module
 
 Base = declarative_base()
 fake = Faker()
-
+if os.path.exists("complex_database.db"):
+    print("delete old db", file=sys.stderr)
+    os.remove("complex_database.db")
 # Many-to-many relationship table
 author_book = Table('author_book', Base.metadata,
                     Column('author_id', Integer, ForeignKey(
@@ -76,6 +79,8 @@ print(f"Creating data time: {add_time:.2f} seconds", file=sys.stderr)
 # Create Books and randomly assign authors and a publisher to each
 # sys.setswitchinterval(0.0001)
 start_assigning = time.time()
+# gc_count_module.start_count_gc_list(
+#     250_000, "/home/lyuze/workspace/py_track/obj_dump.txt", 0, 7, 10_000_000)
 publishers = session.query(Publisher).all()
 authors = session.query(Author).all()
 for _ in range(80000):
@@ -86,9 +91,10 @@ for _ in range(80000):
     )
     session.add(book)
 session.commit()
+# gc_count_module.close_count_gc_list()
 assign_time = time.time() - start_assigning
-print(f"Assign time: {assign_time:.2f} seconds", file=sys.stderr)
-
+print(f"Assign time: {assign_time:.2f} seconds")
+os.remove("complex_database.db")
 
 # start_query = time.time()
 # query = session.query(

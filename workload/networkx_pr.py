@@ -2,17 +2,18 @@ import networkx as nx
 import random
 import time
 
+
 def generate_large_graph(num_nodes, num_edges):
     G = nx.DiGraph()
     G.add_nodes_from(range(num_nodes))
-    
-    #while G.number_of_edges() < num_edges:
+
+    # while G.number_of_edges() < num_edges:
     #    u = random.randint(0, num_nodes - 1)
     #    v = random.randint(0, num_nodes - 1)
     #    if u != v and not G.has_edge(u, v):
     #        G.add_edge(u, v)
     #
-    #return G
+    # return G
 
     for i in range(num_nodes):
         for j in range(i + i, num_nodes):
@@ -21,13 +22,14 @@ def generate_large_graph(num_nodes, num_edges):
 
     return G
 
+
 def compute_pagerank(G):
     pagerank = nx.pagerank(G, alpha=0.85)
     return pagerank
 
 
-num_nodes = 10000  
-num_edges = 300000 
+num_nodes = 1000
+num_edges = 300000
 
 start_creating = time.time()
 G = generate_large_graph(num_nodes, num_edges)
@@ -37,7 +39,7 @@ print(f"Creation_time: {creation_time:.2f} seconds")
 start_comp = time.time()
 for _ in range(1):
     pagerank = compute_pagerank(G)
-    #for _ in range(1):
+    # for _ in range(1):
     #    compute_pagerank(G)
 compute_time = time.time() - start_comp
 print(f"Compute time: {compute_time:.2f} seconds")

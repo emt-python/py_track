@@ -9,8 +9,7 @@ org_heats_file = os.path.join(org_heats_dir, interested_file)
 
 # columns = ["timestamp", "addr"]
 # adjst header as needed
-columns = ["timestamp", "addr", "his0", "his1", "his2", "his3", "his4",
-           "his5", "his6", "his7", "his8", "his9"]
+columns = ["timestamp", "addr"]
 org_df = pd.read_csv(org_heats_file, sep="\t", header=None, names=columns)
 print(org_df.dtypes)
 
@@ -50,5 +49,5 @@ y_rela_all = (org_df_sorted['addr'].max() -
 x_min_all = org_df_sorted['timestamp'].min()
 y_min_all = org_df_sorted['addr'].min()
 print("y_min_all:", y_min_all)
-plot_scatter_map("bm_meteor_contest.png", sorted_file_path,
+plot_scatter_map("gmc.png", sorted_file_path,
                  x_rela_all, y_rela_all, x_min_all, y_min_all)

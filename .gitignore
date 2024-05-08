@@ -5,5 +5,9 @@
 *.bin
 *.old
 *.db
+*.png
+*.so
+*.pyc
 out.txt
 traces/*
+dist/*

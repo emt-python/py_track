@@ -113,8 +113,8 @@ static PyObject *start_count_gc_list(PyObject *self, PyObject *args)
     const char *file;        // file name for post processing
     unsigned int doIO;       // do IO or not
     int rescan_thresh;
-    unsigned int live_time_thresh_arg;
-    if (!PyArg_ParseTuple(args, "i|siii", &sample_dur, &file, &doIO, &rescan_thresh, &live_time_thresh_arg))
+    unsigned int cutoff_limit;
+    if (!PyArg_ParseTuple(args, "i|siii", &sample_dur, &file, &doIO, &rescan_thresh, &cutoff_limit))
     {
         return NULL; // error
     }
@@ -132,7 +132,7 @@ static PyObject *start_count_gc_list(PyObject *self, PyObject *args)
     // bookkeepArgs->gen = gen;
     bookkeepArgs->rescan_thresh = rescan_thresh;
     bookkeepArgs->mainThreadState = mainThreadState;
-    bookkeepArgs->live_time_thresh_arg = live_time_thresh_arg;
+    bookkeepArgs->cutoff_limit = cutoff_limit;
     // long thread_id = PyThread_start_new_thread(thread_trace_from_gc_list, (void *)bookkeepArgs);
     // long thread_id = PyThread_start_new_thread(thread_trace_from_refchain, (void *)bookkeepArgs); // #ifdef Py_TRACE_REFS
     // long thread_id = PyThread_start_new_thread(trace_total_hotness, (void *)bookkeepArgs);
