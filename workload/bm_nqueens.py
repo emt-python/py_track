@@ -59,7 +59,7 @@ if __name__ == "__main__":
     queen_count = 11
     start = time.time()
     # gc_count_module.start_count_gc_list(
-    #     250_000, "/home/lyuze/workspace/py_track/obj_dump.txt", 0, 10, 1_000_000)
+    #     250_000, "obj_dump.txt", 0, 10, 1_000_000)
     bench_n_queens(queen_count)
     # gc_count_module.close_count_gc_list()
     elapsed_time = time.time() - start

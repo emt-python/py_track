@@ -71,7 +71,7 @@ if __name__ == "__main__":
     print(f"Creation time: {creation_time:.2f} seconds")
 
     # gc_count_module.start_count_gc_list(
-    #     250_000, "/home/lyuze/workspace/py_track/obj_dump.txt", 0, 6, 10_000_000)
+    #     250_000, "obj_dump.txt", 0, 6, 10_000_000)
     start_comp = time.time()
     compute_shortest_paths(G, num_pairs=10)
     compute_time = time.time() - start_comp

@@ -223,7 +223,7 @@ if __name__ == '__main__':
     print("init time: {:.2f}".format(init_finish - start))
 
     # gc_count_module.start_count_gc_list(
-    #     250_000, "/home/lyuze/workspace/py_track/obj_dump.txt", 1, 10, 1_000_000)
+    #     250_000, "obj_dump.txt", 1, 10, 1_000_000)
     bench_regex_dna(40, seq)
     # gc_count_module.close_count_gc_list()
     print("compute time: {:.2f}".format(time.time() - init_finish))

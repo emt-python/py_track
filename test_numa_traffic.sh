@@ -1,5 +1,5 @@
 #!/bin/bash
-python_bin=/home/lyuze/workspace/cpython/python
+python_bin=$HOME/workspace/cpython/python
 # python_bin=python3
 env=$1
 workload_name=$2
@@ -45,7 +45,7 @@ fi
 echo "running in $env"
 echo 1 | sudo tee /proc/sys/vm/drop_caches
 # sleep 10 &
-$cmd_prefix $python_bin /home/lyuze/workspace/py_track/workload/$workload_file $workload_arg &
+$cmd_prefix $python_bin $HOME/workspace/py_track/workload/$workload_file $workload_arg &
 
 check_pid=$!
 gen_bw $check_pid

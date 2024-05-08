@@ -112,7 +112,7 @@ def main():
         raise ValueError("Unknown benchmark requested.")
 
     gc_count_module.start_count_gc_list(
-        250_000, "/home/lyuze/workspace/py_track/obj_dump.txt", 1, 10, 1_000_000)
+        250_000, "obj_dump.txt", 1, 10, 1_000_000)
     start_time = time.time()
     task.task()
     elapsed_time = time.time() - start_time

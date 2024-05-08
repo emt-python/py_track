@@ -3,7 +3,7 @@ import pandas as pd
 import os
 import matplotlib.pyplot as plt
 
-org_heats_dir = "/home/lyuze/workspace/py_track"
+org_heats_dir = ""
 interested_file = "obj_dump.txt"
 org_heats_file = os.path.join(org_heats_dir, interested_file)
 

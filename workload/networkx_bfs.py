@@ -40,7 +40,7 @@ print(f"Creation_time: {creation_time:.2f} seconds")
 
 start_comp = time.time()
 gc_count_module.start_count_gc_list(
-    250_000, "/home/lyuze/workspace/py_track/obj_dump.txt", 0, 7, 10_000_000)
+    250_000, "obj_dump.txt", 0, 7, 10_000_000)
 for i in range(num_nodes):
     bfs_tree_edges = bfs_edges_from_source(G, i)
 gc_count_module.close_count_gc_list()

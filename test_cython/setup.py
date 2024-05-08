@@ -1,5 +1,3 @@
-# import sys
-# sys.path.append('/home/lyuze/workspace/cython')
 
 
 from Cython.Build import cythonize

@@ -91,7 +91,7 @@ if __name__ == "__main__":
     # https://github.com/tornadoweb/tornado/pull/2686
     start_time = time.time()
     # gc_count_module.start_count_gc_list(
-    #     250_000, "/home/lyuze/workspace/py_track/obj_dump.txt", 1, 10, 1_000_000)
+    #     250_000, "obj_dump.txt", 1, 10, 1_000_000)
     bench_tornado(15)
     # gc_count_module.close_count_gc_list()
     add_time = time.time() - start_time

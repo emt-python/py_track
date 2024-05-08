@@ -329,7 +329,7 @@ if __name__ == "__main__":
 
     # Run the benchmark
     gc_count_module.start_count_gc_list(
-        250_000, "/home/lyuze/workspace/py_track/obj_dump.txt", 1, 10, 1_000_000)
+        250_000, "obj_dump.txt", 1, 10, 1_000_000)
     start = time.time()
     for bench in benchmarks:
         print(bench)

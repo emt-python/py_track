@@ -205,7 +205,7 @@ def main():
 
     start_time = time.time()
     gc_count_module.start_count_gc_list(
-        250_000, "/home/lyuze/workspace/py_track/obj_dump.txt", 0, 6, 10_000_000)
+        250_000, "obj_dump.txt", 0, 6, 10_000_000)
     for i in range(1):
         board, cti, pieces = get_puzzle(WIDTH, HEIGHT)
         fps = get_footprints(board, cti, pieces)

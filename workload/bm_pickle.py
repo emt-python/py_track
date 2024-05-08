@@ -154,6 +154,6 @@ if __name__ == "__main__":
     protocol = pickle.HIGHEST_PROTOCOL
     loops = 1
     # gc_count_module.start_count_gc_list(
-    #     250_000, "/home/lyuze/workspace/py_track/obj_dump.txt", 0, 10, 1_000_000)
+    #     250_000, "obj_dump.txt", 0, 10, 1_000_000)
     bench_pickle(loops, protocol)
     # gc_count_module.close_count_gc_list()

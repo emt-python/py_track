@@ -80,7 +80,7 @@ print(f"Creating data time: {add_time:.2f} seconds", file=sys.stderr)
 # sys.setswitchinterval(0.0001)
 start_assigning = time.time()
 # gc_count_module.start_count_gc_list(
-#     250_000, "/home/lyuze/workspace/py_track/obj_dump.txt", 0, 7, 10_000_000)
+#     250_000, "obj_dump.txt", 0, 7, 10_000_000)
 publishers = session.query(Publisher).all()
 authors = session.query(Author).all()
 for _ in range(80000):

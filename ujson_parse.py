@@ -63,7 +63,7 @@ file_path = os.path.join(CUR_DIR, '{}_json.txt'.format(json_size))
 
 start = time.time()
 gc_count_module.start_count_gc_list(
-    250_000, "/home/lyuze/workspace/py_track/obj_dump.txt", 0, 10, 1_000_000)
+    250_000, "obj_dump.txt", 0, 10, 1_000_000)
 # sys.settrace(trace)
 combined_data = parse_json_and_combine_duplicates(file_path)
 # del (combined_data)

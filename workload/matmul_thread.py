@@ -34,7 +34,7 @@ for i in range(num_threads):
 
 start = time.time()
 # gc_count_module.start_count_gc_list(
-# 500_000, "/home/lyuze/workspace/py_track/obj_dump.txt", 0, 6, 1_000_000)
+# 500_000, "obj_dump.txt", 0, 6, 1_000_000)
 for thread in threads:
     thread.join()
 

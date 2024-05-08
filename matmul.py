@@ -33,7 +33,7 @@ def matrix_multiply():
     result = [[0 for _ in range(matrix_size)] for _ in range(matrix_size)]
 
     # gc_count_module.start_count_gc_list(
-    #     250_000, "/home/lyuze/workspace/py_track/obj_dump.txt", 0, 10, 1_000_000)
+    #     250_000, "obj_dump.txt", 0, 10, 1_000_000)
     start = time.time()
     for i in range(matrix_size):
         for j in range(matrix_size):
@@ -63,7 +63,7 @@ def trace(frame, event, arg):
 
 gc.collect()
 # gc_count_module.start_count_gc_list(
-#     250_000, "/home/lyuze/workspace/py_track/obj_dump.txt", 0, 10, 1_000_000)
+#     250_000, "obj_dump.txt", 0, 10, 1_000_000)
 # sys.settrace(trace)
 matrix_multiply()
 # gc_count_module.close_count_gc_list()

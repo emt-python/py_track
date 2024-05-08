@@ -56,7 +56,7 @@ print(f"Creation_time: {creation_time:.2f} seconds")
 
 start_comp = time.time()
 # gc_count_module.start_count_gc_list(
-#     250_000, "/home/lyuze/workspace/py_track/obj_dump.txt", 0, 7, 1_000_000)
+#     250_000, "obj_dump.txt", 0, 7, 1_000_000)
 triangle_count = count_triangles(G)
 compute_time = time.time() - start_comp
 # gc_count_module.close_count_gc_list()
