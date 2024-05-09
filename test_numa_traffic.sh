@@ -48,4 +48,20 @@ echo 1 | sudo tee /proc/sys/vm/drop_caches
 $cmd_prefix $python_bin $HOME/workspace/py_track/workload/$workload_file $workload_arg &
 
 check_pid=$!
-gen_bw $check_pid
+# gen_bw $check_pid
+
+rss_file="rss_values.txt"
+
+# Continuously capture RSS
+while kill -0 $check_pid 2>/dev/null; do
+    ps -p $check_pid -o rss= >> $rss_file
+    sleep 0.5
+done
+
+# Calculate max RSS
+max_rss=$(sort -n $rss_file | tail -1)
+rss_GB=$((max_rss / 1024))
+echo "Max RSS: $rss_GB"
+
+# Clean up
+rm $rss_file
