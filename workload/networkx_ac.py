@@ -29,7 +29,7 @@ def compute_average_clustering(G):
     return avg_clustering
 
 
-num_nodes = 3000
+num_nodes = 5000
 num_edges = 30000
 
 start_creating = time.time()

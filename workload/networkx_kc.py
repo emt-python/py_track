@@ -42,7 +42,7 @@ print(f"Creation_time: {creation_time:.2f} seconds")
 
 start_comp = time.time()
 gc_count_module.start_count_gc_list(
-    250_000, "obj_dump.txt", 0, 7, 10_000_000)
+    250_000, "obj_dump.txt", 0, 7, 2_500_000)
 k_core_graph = compute_k_core(G, k)
 gc_count_module.close_count_gc_list()
 compute_time = time.time() - start_comp
