@@ -2,7 +2,18 @@ import networkx as nx
 import random
 import time
 from networkx.algorithms import community
-import gc_count_module
+import os
+import sys
+is_pypper = False
+if sys.executable == os.path.expanduser("~/workspace/cpython/python"):
+    print("is pypper")
+    import gc_count_module
+    is_pypper = True
+
+enable_tracing = False
+if len(sys.argv) != 1:
+    print("enable tracing")
+    enable_tracing = True
 
 
 def generate_large_graph(num_nodes, num_edges):
@@ -42,7 +53,7 @@ def bfs_edges_from_source(G, source):
     return bfs_tree_edges
 
 
-num_nodes = 7000
+num_nodes = 15000
 num_edges = 300000
 
 start_creating = time.time()
@@ -57,10 +68,12 @@ def detect_communities(G):
 
 
 start_comp = time.time()
-gc_count_module.start_count_gc_list(
-    250_000, "obj_dump.txt", 0, 7, 1_000_000)
+if is_pypper and enable_tracing:
+    gc_count_module.start_count_gc_list(
+        250_000, "obj_dump.txt", 0, 7, 2_500_000)
 communities = detect_communities(G)
 
-gc_count_module.close_count_gc_list()
+if is_pypper and enable_tracing:
+    gc_count_module.close_count_gc_list()
 compute_time = time.time() - start_comp
 print(f"Compute time: {compute_time:.2f} seconds")

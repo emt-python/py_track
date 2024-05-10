@@ -1,12 +1,20 @@
 #!/bin/bash
-python_bin=$HOME/workspace/cpython/python
+# python_bin=$HOME/workspace/cpython/python
 # python_bin=python3
 env=$1
-workload_name=$2
-workload_arg=$3
+if [ "$2" = "python" ]; then
+    python_bin=$HOME/workspace/cpython_org/python
+# Check if the second argument is "pypper"
+elif [ "$2" = "pypper" ]; then
+    python_bin=$HOME/workspace/cpython/python
+else
+    echo "Invalid argument for python executable"
+    exit 1
+fi
+workload_name=$3
 workload_file=$workload_name".py"
-profile_name="${workload_name}_${workload_arg}"
-echo "running test: "$workload_file
+profile_name="${workload_name}"
+echo running $workload_file in $env using $2
 
 gen_bw() {
     local check_pid=$1
@@ -42,10 +50,9 @@ fi
 #     cmd_prefix="numactl --cpunodebind 0 -- "
 # elif [ "$env" = "interleave" ]; then
 #     cmd_prefix="numactl --cpunodebind 0 --interleave all -- "
-echo "running in $env"
 echo 1 | sudo tee /proc/sys/vm/drop_caches
 # sleep 10 &
-$cmd_prefix $python_bin $HOME/workspace/py_track/workload/$workload_file $workload_arg &
+$cmd_prefix $python_bin $HOME/workspace/py_track/workload/$workload_file &
 
 check_pid=$!
 # gen_bw $check_pid
@@ -54,7 +61,7 @@ rss_file="rss_values.txt"
 
 # Continuously capture RSS
 while kill -0 $check_pid 2>/dev/null; do
-    ps -p $check_pid -o rss= >> $rss_file
+    ps -p $check_pid -o rss= >>$rss_file
     sleep 0.5
 done
 
@@ -65,3 +72,4 @@ echo "Max RSS: $rss_GB"
 
 # Clean up
 rm $rss_file
+sleep 3

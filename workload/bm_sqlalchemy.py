@@ -9,8 +9,18 @@ from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 import random
 from faker import Faker
-import gc_count_module
+import sys
 
+is_pypper = False
+if sys.executable == os.path.expanduser("~/workspace/cpython/python"):
+    print("is pypper")
+    import gc_count_module
+    is_pypper = True
+
+enable_tracing = False
+if len(sys.argv) != 1:
+    print("enable tracing")
+    enable_tracing = True
 Base = declarative_base()
 fake = Faker()
 if os.path.exists("complex_database.db"):
@@ -79,8 +89,10 @@ print(f"Creating data time: {add_time:.2f} seconds", file=sys.stderr)
 # Create Books and randomly assign authors and a publisher to each
 # sys.setswitchinterval(0.0001)
 start_assigning = time.time()
-# gc_count_module.start_count_gc_list(
-#     250_000, "obj_dump.txt", 0, 7, 10_000_000)
+if is_pypper and enable_tracing:
+    gc_count_module.start_count_gc_list(
+        250_000, "obj_dump.txt", 0, 7, 2_500_000)
+
 publishers = session.query(Publisher).all()
 authors = session.query(Author).all()
 for _ in range(80000):
@@ -91,7 +103,8 @@ for _ in range(80000):
     )
     session.add(book)
 session.commit()
-# gc_count_module.close_count_gc_list()
+if is_pypper and enable_tracing:
+    gc_count_module.close_count_gc_list()
 assign_time = time.time() - start_assigning
 print(f"Assign time: {assign_time:.2f} seconds")
 os.remove("complex_database.db")

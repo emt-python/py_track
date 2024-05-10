@@ -8,13 +8,22 @@ parse a generated XML file, search it, create new XML trees from
 it and serialise the result.
 """
 
-import gc
 import time
 import io
 import os
 import sys
 import tempfile
 from collections import defaultdict
+is_pypper = False
+if sys.executable == os.path.expanduser("~/workspace/cpython/python"):
+    print("is pypper")
+    import gc_count_module
+    is_pypper = True
+
+enable_tracing = False
+if len(sys.argv) != 1:
+    print("enable tracing")
+    enable_tracing = True
 
 
 __author__ = "stefan_ml@behnel.de (Stefan Behnel)"
@@ -333,6 +342,13 @@ if __name__ == "__main__":
     else:
         name = 'xml_etree_pure_python_%s' % bench
     bench_func = globals()['bench_%s' % bench]
+
+    if is_pypper and enable_tracing:
+        gc_count_module.start_count_gc_list(
+            250_000, "obj_dump.txt", 0, 7, 2_500_000)
     bench_etree(1, etree_module, bench_func)
+
+    if is_pypper and enable_tracing:
+        gc_count_module.close_count_gc_list()
     elapsed_time = time.time() - start
     print(f"Compute time: {elapsed_time:.2f} seconds")

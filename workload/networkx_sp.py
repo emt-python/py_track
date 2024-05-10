@@ -1,7 +1,18 @@
 import time
 import networkx as nx
 import random
-import gc_count_module
+import os
+import sys
+is_pypper = False
+if sys.executable == os.path.expanduser("~/workspace/cpython/python"):
+    print("is pypper")
+    import gc_count_module
+    is_pypper = True
+
+enable_tracing = False
+if len(sys.argv) != 1:
+    print("enable tracing")
+    enable_tracing = True
 
 
 def create_large_dense_graph(num_nodes):
@@ -59,21 +70,24 @@ def compute_shortest_paths(G, num_pairs=10):
 
 # 6000: 3216 MB
 if __name__ == "__main__":
-    start_creating = time.time()
     num_nodes = 9000
     num_edges = 1000
     # G = nx.gnp_random_graph(10000, 0.5, seed=42, directed=True)
     # nx.set_edge_attributes(G, {e: random.randint(1, 10)
     #                        for e in G.edges()}, 'weight')
+    start_creating = time.time()
     G = create_large_dense_graph(num_nodes)
     # G = create_large_dense_graph_with_edges(num_nodes, num_edges)
     creation_time = time.time() - start_creating
     print(f"Creation time: {creation_time:.2f} seconds")
 
-    # gc_count_module.start_count_gc_list(
-    #     250_000, "obj_dump.txt", 0, 6, 10_000_000)
     start_comp = time.time()
+    if is_pypper and enable_tracing:
+        gc_count_module.start_count_gc_list(
+            250_000, "obj_dump.txt", 0, 7, 2_500_000)
     compute_shortest_paths(G, num_pairs=10)
+    if is_pypper and enable_tracing:
+        gc_count_module.close_count_gc_list()
+
     compute_time = time.time() - start_comp
-    # gc_count_module.close_count_gc_list()
     print(f"Compute time: {compute_time:.2f} seconds")
