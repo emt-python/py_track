@@ -12,6 +12,7 @@ else
     exit 1
 fi
 workload_name=$3
+enable_pypper=$4
 workload_file=$workload_name".py"
 profile_name="${workload_name}"
 echo running $workload_file in $env using $2
@@ -35,6 +36,48 @@ gen_bw() {
     # gnuplot -e "output_file='./traces/${profile_name}_bw.png'; input_file='./traces/${profile_name}_bw.csv'; wl_title='Memory Bandwidth'" ./plot_bw.gnuplot
     # echo "plot bw done"
 }
+get_all_rss() {
+    local rss_file="rss_values.txt"
+    local check_pid=$1
+
+    while kill -0 $check_pid 2>/dev/null; do
+        ps -p $check_pid -o rss= >>$rss_file
+        sleep 0.5
+    done
+
+    local max_rss=$(sort -n $rss_file | tail -1)
+    local rss_MB=$((max_rss / 1024))
+    echo "Max RSS: $rss_MB" MB
+
+    rm $rss_file
+}
+
+get_DRAM_size() {
+    local check_pid=$1
+
+    local MIN_MEMORY=999999999
+    local MAX_MEMORY=0
+
+    while kill -0 $check_pid 2> /dev/null; do
+        local CURRENT_FREE=$(numactl -H | grep "node 0 free:" | awk '{print $4}')
+        # echo $CURRENT_FREE
+
+        if [[ "$CURRENT_FREE" -lt "$MIN_MEMORY" ]]; then
+            MIN_MEMORY=$CURRENT_FREE
+        fi
+        if [[ "$CURRENT_FREE" -gt "$MAX_MEMORY" ]]; then
+            MAX_MEMORY=$CURRENT_FREE
+        fi
+
+        sleep 0.5
+    done
+
+    local DIFFERENCE=$(($MAX_MEMORY - $MIN_MEMORY))
+
+    echo "Min memory: $MIN_MEMORY MB"
+    echo "Max memory: $MAX_MEMORY MB"
+    echo "Difference: $DIFFERENCE MB"
+}
 
 if [ "$env" = "cxl" ]; then
     cmd_prefix="numactl --cpunodebind 0 --membind 1 -- "
@@ -51,25 +94,13 @@ fi
 # elif [ "$env" = "interleave" ]; then
 #     cmd_prefix="numactl --cpunodebind 0 --interleave all -- "
 echo 1 | sudo tee /proc/sys/vm/drop_caches
+
+numactl -H | grep "node 0 free"
 # sleep 10 &
-$cmd_prefix $python_bin $HOME/workspace/py_track/workload/$workload_file &
+$cmd_prefix $python_bin $HOME/workspace/py_track/workload/$workload_file $enable_pypper &
 
 check_pid=$!
 # gen_bw $check_pid
-
-rss_file="rss_values.txt"
-
-# Continuously capture RSS
-while kill -0 $check_pid 2>/dev/null; do
-    ps -p $check_pid -o rss= >>$rss_file
-    sleep 0.5
-done
-
-# Calculate max RSS
-max_rss=$(sort -n $rss_file | tail -1)
-rss_GB=$((max_rss / 1024))
-echo "Max RSS: $rss_GB"
-
-# Clean up
-rm $rss_file
+get_all_rss $check_pid &
+get_DRAM_size $check_pid
 sleep 3
