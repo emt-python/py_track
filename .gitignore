@@ -8,6 +8,7 @@
 *.png
 *.so
 *.pyc
+*.out
 out.txt
 traces/*
 dist/*

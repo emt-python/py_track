@@ -112,9 +112,9 @@ static PyObject *start_count_gc_list(PyObject *self, PyObject *args)
     unsigned int sample_dur; // sampling duration, for slow scan, in us
     const char *file;        // file name for post processing
     unsigned int doIO;       // do IO or not
-    int rescan_thresh;
+    int metadata_resv;
     unsigned int cutoff_limit;
-    if (!PyArg_ParseTuple(args, "i|siii", &sample_dur, &file, &doIO, &rescan_thresh, &cutoff_limit))
+    if (!PyArg_ParseTuple(args, "i|siii", &sample_dur, &file, &doIO, &metadata_resv, &cutoff_limit))
     {
         return NULL; // error
     }
@@ -130,7 +130,7 @@ static PyObject *start_count_gc_list(PyObject *self, PyObject *args)
     // bookkeepArgs->buff_size = buff_size;
     bookkeepArgs->doIO = doIO;
     // bookkeepArgs->gen = gen;
-    bookkeepArgs->rescan_thresh = rescan_thresh;
+    bookkeepArgs->metadata_resv = metadata_resv;
     bookkeepArgs->mainThreadState = mainThreadState;
     bookkeepArgs->cutoff_limit = cutoff_limit;
     // long thread_id = PyThread_start_new_thread(thread_trace_from_gc_list, (void *)bookkeepArgs);
