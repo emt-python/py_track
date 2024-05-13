@@ -5,8 +5,18 @@ import gc
 import dis
 import string
 import gc_count_module
+import os
 
+is_pypper = False
+if sys.executable == os.path.expanduser("~/workspace/cpython/python"):
+    print("is pypper")
+    import gc_count_module
+    is_pypper = True
 
+enable_tracing = False
+if len(sys.argv) != 1:
+    print("enable tracing")
+    enable_tracing = True
 def generate_random_string(max_length):
     # Generate length between 1 and max_length
     length = random.randint(1, max_length)
@@ -19,7 +29,7 @@ def generate_matrix(size, max_str_length):
 
 def matrix_multiply():
     random.seed(1)
-    matrix_size = 1600
+    matrix_size = 800
     # max_str_length = 5
     # matrix_A = generate_matrix(matrix_size, max_str_length)
     # matrix_B = generate_matrix(matrix_size, max_str_length)
@@ -33,15 +43,17 @@ def matrix_multiply():
 
     result = [[0 for _ in range(matrix_size)] for _ in range(matrix_size)]
 
-    # gc_count_module.start_count_gc_list(
-    #     250_000, "obj_dump.txt", 0, 7, 1_000_000)
+    if is_pypper and enable_tracing:
+        gc_count_module.start_count_gc_list(
+            250_000, "obj_dump.txt", 0, 1024, 1_000_000)
     start = time.time()
     for i in range(matrix_size):
         for j in range(matrix_size):
             for k in range(matrix_size):
                 result[i][j] += matrix_A[i][k] * matrix_B[k][j]
+    if is_pypper and enable_tracing:
+        gc_count_module.close_count_gc_list()
     latency = time.time() - start
-    # gc_count_module.close_count_gc_list()
     print("latency: {:.3f} for {}*{}".format(latency,
           matrix_size, matrix_size), file=sys.stderr)
 

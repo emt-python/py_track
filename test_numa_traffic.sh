@@ -95,12 +95,23 @@ fi
 #     cmd_prefix="numactl --cpunodebind 0 --interleave all -- "
 echo 1 | sudo tee /proc/sys/vm/drop_caches
 
-numactl -H | grep "node 0 free"
 # sleep 10 &
+if [ -n "$enable_pypper" ]; then
+    echo "Running memeater 1.3G"
+    $HOME/workspace/py_track/memeater 1.3 &
+    hogger_pid=$!
+    sleep 1.5
+fi
+numactl -H | grep "node 0 free"
 $cmd_prefix $python_bin $HOME/workspace/py_track/workload/$workload_file $enable_pypper &
 
 check_pid=$!
 # gen_bw $check_pid
 get_all_rss $check_pid &
 get_DRAM_size $check_pid
+
+if [ -n "$enable_pypper" ]; then
+    echo "Stop hogger"
+    kill -9 $hogger_pid
+fi
 sleep 3
