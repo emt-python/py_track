@@ -60,7 +60,7 @@ def build_xml_tree_v2(etree):
     root = etree.Element('root')
 
     # Significantly increase the number of repetitive broad subtrees
-    for c in range(500):  # Increased from 50 to 500
+    for c in range(2000):  # Increased from 50 to 500
         child = SubElement(root, f'child-{c}', tag_type="broadchild")
         for i in range(500):  # Increased from 100 to 500
             subchild = SubElement(child, 'subchild', tag_type="subleaf")
@@ -72,7 +72,7 @@ def build_xml_tree_v2(etree):
     # Create a deeper subtree
     deep = SubElement(root, 'deepchildren', tag_type="deepchild")
     current_level = deep
-    for i in range(100):  # Making the deep tree deeper, from 50 to 100 levels
+    for i in range(500):  # Making the deep tree deeper, from 50 to 100 levels
         current_level = SubElement(
             current_level, 'deepchild', tag_type="deeperchild")
         # Adding intermediate leaves in the deep structure
@@ -345,7 +345,7 @@ if __name__ == "__main__":
 
     if is_pypper and enable_tracing:
         gc_count_module.start_count_gc_list(
-            250_000, "obj_dump.txt", 0, 7, 2_500_000)
+            250_000, "obj_dump.txt", 0, 1024, 1_000_000, 5)
     bench_etree(1, etree_module, bench_func)
 
     if is_pypper and enable_tracing:
