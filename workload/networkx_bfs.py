@@ -52,7 +52,7 @@ print(f"Creation_time: {creation_time:.2f} seconds")
 start_comp = time.time()
 if is_pypper and enable_tracing:
     gc_count_module.start_count_gc_list(
-        250_000, "obj_dump.txt", 0, 7, 2_500_000)
+        250_000, "obj_dump.txt", 0, 1024, 1_000_000, 5)
 
 for i in range(num_nodes):
     bfs_tree_edges = bfs_edges_from_source(G, i)

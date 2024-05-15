@@ -77,7 +77,7 @@ print(f"Creation_time: {creation_time:.2f} seconds")
 start_comp = time.time()
 if is_pypper and enable_tracing:
     gc_count_module.start_count_gc_list(
-        250_000, "obj_dump.txt", 0, 7, 2_500_000)
+        250_000, "obj_dump.txt", 0, 1024, 1_000_000, 5)
 for _ in range(1):
     centrality = compute_betweenness_centrality(G)
 if is_pypper and enable_tracing:

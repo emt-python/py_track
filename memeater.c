@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
 
     // Initialize memory
     memset(memory, 0, size);
-    printf("%f GB of memory allocated...\n", gigabytes);
+    fprintf(stderr, "%f GB of memory allocated...\n", gigabytes);
     while(1)
     {
         sleep(1);

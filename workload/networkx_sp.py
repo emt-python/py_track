@@ -48,24 +48,25 @@ def create_large_dense_graph_with_edges(num_nodes, num_edges=1000):
 def compute_shortest_paths(G, num_pairs=10):
     # Increase memory usage by enlarging the working data set
     # Replicate nodes to artificially increase processing
-    nodes = list(G.nodes()) * 10
+    nodes = list(G.nodes())
     stored_paths = {}
 
-    for _ in range(num_pairs * 10):
+    for idx in range(num_pairs):
         u, v = random.sample(nodes, 2)
+        print("running index", idx, file=sys.stderr)
         path = nx.shortest_path(G, source=u, target=v, weight='weight')
 
-        # Store each path with a unique key to prevent overwriting
-        stored_paths[(u, v)] = path
+    # Store each path with a unique key to prevent overwriting
+    # stored_paths[(u, v)] = path
 
-        # Redundant computation for memory traffic
-        for _ in range(5):  # Artificially add computation steps
-            _ = nx.shortest_path(G, source=u, target=v, weight='weight')
+    # Redundant computation for memory traffic
+    # for _ in range(5):  # Artificially add computation steps
+    #     _ = nx.shortest_path(G, source=u, target=v, weight='weight')
 
     # Further increase memory usage by duplicating the stored paths dictionary
-    duplicated_paths = {key: value for key, value in stored_paths.items()}
+    # duplicated_paths = {key: value for key, value in stored_paths.items()}
 
-    return duplicated_paths
+    # return duplicated_paths
 
 
 # 6000: 3216 MB
@@ -79,15 +80,15 @@ if __name__ == "__main__":
     G = create_large_dense_graph(num_nodes)
     # G = create_large_dense_graph_with_edges(num_nodes, num_edges)
     creation_time = time.time() - start_creating
-    print(f"Creation time: {creation_time:.2f} seconds")
+    print(f"Creation time: {creation_time:.2f} seconds", file=sys.stderr)
 
     start_comp = time.time()
     if is_pypper and enable_tracing:
         gc_count_module.start_count_gc_list(
-            250_000, "obj_dump.txt", 0, 7, 2_500_000)
-    compute_shortest_paths(G, num_pairs=10)
+            250_000, "obj_dump.txt", 0, 1024, 1_000_000, 5)
+    compute_shortest_paths(G, num_pairs=100)
     if is_pypper and enable_tracing:
         gc_count_module.close_count_gc_list()
 
     compute_time = time.time() - start_comp
-    print(f"Compute time: {compute_time:.2f} seconds")
+    print(f"Compute time: {compute_time:.2f} seconds", file=sys.stderr)
