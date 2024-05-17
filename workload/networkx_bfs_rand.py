@@ -20,14 +20,6 @@ def generate_large_graph(num_nodes, num_edges):
     G = nx.DiGraph()
     G.add_nodes_from(range(num_nodes))
 
-    # while G.number_of_edges() < num_edges:
-    #     u = random.randint(0, num_nodes - 1)
-    #     v = random.randint(0, num_nodes - 1)
-    #     if u != v and not G.has_edge(u, v):
-    #         G.add_edge(u, v)
-
-    # return G
-
     for i in range(num_nodes):
         for j in range(i + i, num_nodes):
             if random.random() > 0.5:
@@ -43,6 +35,7 @@ def bfs_edges_from_source(G, source):
 
 num_nodes = 8000
 num_edges = 300000
+random.seed(42)
 
 start_creating = time.time()
 G = generate_large_graph(num_nodes, num_edges)
@@ -54,9 +47,10 @@ if is_pypper and enable_tracing:
     gc_count_module.start_count_gc_list(
         250_000, "obj_dump.txt", 0, 1024, 1_000_000, 5)
 
-for i in range(num_nodes):
-    bfs_tree_edges = bfs_edges_from_source(G, i)
-    # elapsed_time = time.time() - start_comp
+for _ in range(3000):
+    start_id = random.randint(0, 5000)
+    bfs_tree_edges = bfs_edges_from_source(G, start_id)
+    elapsed_time = time.time() - start_comp
     # if i % 100 == 0:
     #     print("computed to node", i, file=sys.stderr)
     #     print(f"Already compute time: {elapsed_time:.2f} seconds", file=sys.stderr)

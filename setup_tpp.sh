@@ -19,3 +19,4 @@ else
 fi
 
 sleep 1
+exit 0

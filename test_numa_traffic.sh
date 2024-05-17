@@ -91,11 +91,16 @@ if [ "$env" = "cxl" ]; then
 elif [ "$env" = "base" ]; then
     cmd_prefix="numactl --cpunodebind 0 --membind 0 -- "
 elif [ "$env" = "org" ]; then
-    cmd_prefix="numactl --cpunodebind 0 -- "
+    if [ "$2" = "pypper" ] || [ "$2" = "normal" ]; then
+        cmd_prefix="numactl --cpunodebind 0 --preferred 0 -- "
+    else
+        cmd_prefix=""
+    fi
 else
     echo "wrong env, pls try again!"
     exit 1
 fi
+echo "cmd_prefix: " $cmd_prefix
 # elif [ "$env" = "cpu0" ]; then
 #     cmd_prefix="numactl --cpunodebind 0 -- "
 # elif [ "$env" = "interleave" ]; then

@@ -45,7 +45,7 @@ def matrix_multiply():
 
     if is_pypper and enable_tracing:
         gc_count_module.start_count_gc_list(
-            250_000, "obj_dump.txt", 0, 1024, 1_000_000)
+            250_000, "obj_dump.txt", 0, 1024, 1_000_000, 5)
     start = time.time()
     for i in range(matrix_size):
         for j in range(matrix_size):
