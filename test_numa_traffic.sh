@@ -109,13 +109,13 @@ pkill -9 memeater
 echo 3 | sudo tee /proc/sys/vm/drop_caches
 
 # sleep 10 &
-# if [ -n "$enable_pypper" ]; then
-#     # echo "Do nothing"
-#     echo "Running memeater 1.6G"
-#     $HOME/workspace/py_track/memeater 1.6 &
-#     hogger_pid=$!
-#     sleep 10
-# fi
+if [ -n "$enable_pypper" ]; then
+    # echo "Do nothing"
+    echo "Running memeater 1.8G"
+    $HOME/workspace/py_track/memeater 1.8 &
+    hogger_pid=$!
+    sleep 10
+fi
 numactl -H | grep "node 0 free"
 $cmd_prefix $python_bin $HOME/workspace/py_track/workload/$workload_file $enable_pypper &
 
@@ -124,8 +124,8 @@ check_pid=$!
 get_all_rss $check_pid &
 get_DRAM_size $check_pid
 
-# if [ -n "$enable_pypper" ]; then
-#     echo "Stop hogger"
-#     kill -9 $hogger_pid
-# fi
+if [ -n "$enable_pypper" ]; then
+    echo "Stop hogger"
+    kill -9 $hogger_pid
+fi
 sleep 2
