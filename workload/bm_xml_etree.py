@@ -9,7 +9,6 @@ it and serialise the result.
 """
 
 import time
-import gc_count_module
 import io
 import os
 import sys
@@ -18,7 +17,25 @@ from collections import defaultdict
 
 # import pyperf
 
+is_pypper = False
+if sys.executable == os.path.expanduser("~/workspace/cpython/python"):
+    print("is pypper")
+    import gc_count_module
+    is_pypper = True
 
+if sys.argv[1] == "no_gc":
+    print("running no gc")
+    import gc
+    gc.disable()
+elif sys.argv[1] == "with_gc":
+    print("running with gc")
+else:
+    print("Using GC or not? Forget to specify?")
+
+enable_tracing = False
+if len(sys.argv) != 2:
+    print("enable tracing")
+    enable_tracing = True
 __author__ = "stefan_ml@behnel.de (Stefan Behnel)"
 
 FALLBACK_ETMODULE = 'xml.etree.ElementTree'
@@ -202,7 +219,7 @@ def bench_process(etree, xml_file, xml_data, xml_root):
 
 def bench_generate(etree, xml_file, xml_data, xml_root):
     output = []
-    for _ in range(10):
+    for _ in range(50):
         root = build_xml_tree(etree)
         output.append(etree.tostring(root))
 
@@ -257,8 +274,8 @@ def add_cmdline_args(cmd, args):
 
 
 if __name__ == "__main__":
-    import gc
-    gc.disable()
+    # import gc
+    # gc.disable()
     # On Python 3, xml.etree.cElementTree is a deprecated alias
     # to xml.etree.ElementTree
     default_etmodule = "xml.etree.ElementTree"
@@ -328,9 +345,10 @@ if __name__ == "__main__":
     benchmarks = BENCHMARKS
 
     # Run the benchmark
-    gc_count_module.start_count_gc_list(
-        250_000, "obj_dump.txt", 1, 10, 1_000_000)
     start = time.time()
+    if is_pypper and enable_tracing:
+        gc_count_module.start_count_gc_list(
+            250_000, "obj_dump.txt", 0, 1024, 1_000_000, 5)
     for bench in benchmarks:
         print(bench)
         if accelerator:
@@ -340,6 +358,7 @@ if __name__ == "__main__":
         bench_func = globals()['bench_%s' % bench]
         # runner.bench_time_func(name, , etree_module, bench_func)
         bench_etree(1, etree_module, bench_func)
-    gc_count_module.close_count_gc_list()
+    if is_pypper and enable_tracing:
+        gc_count_module.close_count_gc_list()
     elapsed_time = time.time() - start
     print(f"Compute time: {elapsed_time:.2f} seconds")

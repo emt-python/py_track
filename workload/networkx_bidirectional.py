@@ -9,10 +9,20 @@ if sys.executable == os.path.expanduser("~/workspace/cpython/python"):
     import gc_count_module
     is_pypper = True
 
+if sys.argv[1] == "no_gc":
+    print("running no gc")
+    import gc
+    gc.disable()
+elif sys.argv[1] == "with_gc":
+    print("running with gc")
+else:
+    print("Using GC or not? Forget to specify?")
+
 enable_tracing = False
-if len(sys.argv) != 1:
+if len(sys.argv) != 2:
     print("enable tracing")
     enable_tracing = True
+
 
 def create_large_dense_graph(num_nodes):
     G = nx.Graph()
@@ -23,7 +33,6 @@ def create_large_dense_graph(num_nodes):
             if random.random() > 0.5:  # Adjust density with probability condition
                 G.add_edge(i, j, weight=random.randint(1, 10))
     return G
-
 
 
 def compute_bidirectional(G):
@@ -41,7 +50,7 @@ def compute_bidirectional(G):
 
     # Redundant computation for memory traffic
 
-    for _ in range(80):  # Artificially add computation steps
+    for _ in range(100):  # Artificially add computation steps
         u, v = random.sample(nodes, 2)
         _ = nx.bidirectional_dijkstra(G, source=u, target=v, weight='weight')
     # Further increase memory usage by duplicating the stored paths dictionary
@@ -50,10 +59,8 @@ def compute_bidirectional(G):
     # return duplicated_paths
 
 
-# 6000: 3216 MB
 if __name__ == "__main__":
-    num_nodes = 9000
-    num_edges = 1000
+    num_nodes = 8000
     # G = nx.gnp_random_graph(10000, 0.5, seed=42, directed=True)
     # nx.set_edge_attributes(G, {e: random.randint(1, 10)
     #                        for e in G.edges()}, 'weight')

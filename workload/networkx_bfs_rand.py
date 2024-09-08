@@ -10,13 +10,22 @@ if sys.executable == os.path.expanduser("~/workspace/cpython/python"):
     import gc_count_module
     is_pypper = True
 
+if sys.argv[1] == "no_gc":
+    print("running no gc")
+    import gc
+    gc.disable()
+elif sys.argv[1] == "with_gc":
+    print("running with gc")
+else:
+    print("Using GC or not? Forget to specify?")
+
 enable_tracing = False
-if len(sys.argv) != 1:
+if len(sys.argv) != 2:
     print("enable tracing")
     enable_tracing = True
 
 
-def generate_large_graph(num_nodes, num_edges):
+def generate_large_graph(num_nodes):
     G = nx.DiGraph()
     G.add_nodes_from(range(num_nodes))
 
@@ -33,12 +42,11 @@ def bfs_edges_from_source(G, source):
     return bfs_tree_edges
 
 
-num_nodes = 8000
-num_edges = 300000
+num_nodes = 12000
 random.seed(42)
 
 start_creating = time.time()
-G = generate_large_graph(num_nodes, num_edges)
+G = generate_large_graph(num_nodes)
 creation_time = time.time() - start_creating
 print(f"Creation_time: {creation_time:.2f} seconds", file=sys.stderr)
 

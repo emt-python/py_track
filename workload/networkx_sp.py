@@ -3,14 +3,24 @@ import networkx as nx
 import random
 import os
 import sys
+
 is_pypper = False
 if sys.executable == os.path.expanduser("~/workspace/cpython/python"):
     print("is pypper")
     import gc_count_module
     is_pypper = True
 
+if sys.argv[1] == "no_gc":
+    print("running no gc")
+    import gc
+    gc.disable()
+elif sys.argv[1] == "with_gc":
+    print("running with gc")
+else:
+    print("Using GC or not? Forget to specify?")
+
 enable_tracing = False
-if len(sys.argv) != 1:
+if len(sys.argv) != 2:
     print("enable tracing")
     enable_tracing = True
 
@@ -53,7 +63,7 @@ def compute_shortest_paths(G, num_pairs=10):
 
     for idx in range(num_pairs):
         u, v = random.sample(nodes, 2)
-        print("running index", idx, file=sys.stderr)
+        # print("running index", idx, file=sys.stderr)
         path = nx.shortest_path(G, source=u, target=v, weight='weight')
 
     # Store each path with a unique key to prevent overwriting

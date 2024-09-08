@@ -1,37 +1,47 @@
 #!/bin/bash
+# echo 2 | sudo tee /proc/sys/vm/panic_on_oom
+cmd_prefix="numactl --cpunodebind 0 --preferred 0 -- "
+python_bin=/home/lyuze/workspace/cpython/python
+workloads=("networkx_ac" "networkx_astar" "networkx_bc" "networkx_bellman" "networkx_bfs_rand" "networkx_bfs" "networkx_bidirectional"
+    "networkx_gmc" "networkx_kc" "networkx_lc" "networkx_mmm" "networkx_sp" "networkx_tc")
+mem_splits=("25" "50" "75" "100")
+gen_with_traces() {
+    for wl in "${workloads[@]}"; do
+        for split in "${mem_splits[@]}"; do
+            source bench_cmds/${wl}.sh $split
+            echo "----------running $wl w/ $split-------------"
+            pkill -9 memeater
+            echo 3 | sudo tee /proc/sys/vm/drop_caches
 
-# echo >out.txt
+            trap '$cmd_prefix $python_bin $SCRIPT with_gc 1 & check_pid=$!; wait $check_pid' SIGUSR1
+            stdbuf -oL ./memeater $BENCH_DRAM $$ &
+            MEMAETER_PID=$!
+            wait $MEMAETER_PID
+            echo "killing memeaterr"
+            kill -9 $MEMAETER_PID
+            # ./test_numa_traffic.sh base pypper ${wl} with_gc 1
+            sleep 10
 
-workloads=("networkx_bidirectional")
-# "networkx_astar"
-# workloads=("bm_sqlalchemy_new" "nested_sets" "large_results" "bulk_insert" "seperate_db")
-# workloads=("bm_sqlalchemy" "bm_xml_etree_parse" "networkx_bc" "networkx_gmc" "networkx_kc" "networkx_bfs"
-#     "networkx_sp", "networkx_mmm")
-# workloads=("dummy" "dummy")
+            # echo 3 | sudo tee /proc/sys/vm/drop_caches
+            # echo "----------running $wl w/ gc cxl -------------"
+            # ./test_numa_traffic.sh cxl normal ${wl} with_gc
+            # sleep 3
 
-for wl in "${workloads[@]}"; do
-    # ./setup_sqlalchemy.sh python
-    # ./test_numa_traffic.sh base normal ${wl} >> out.txt 2>&1
-    # sleep 5
-    # ./test_numa_traffic.sh cxl normal ${wl} >> out.txt 2>&1
-    # sleep 5
-    # ./test_numa_traffic.sh base pypper ${wl} >> out.txt 2>&1
-    # sleep 5
-    # ./test_numa_traffic.sh cxl pypper ${wl} >> out.txt 2>&1
-    # sleep 5
+            # echo "----------running damo $wl w/o gc -------------"
+            # ./do_damo.sh base ${wl} no_gc
+            # echo "----------running damo $wl w/ gc -------------"
+            # ./do_damo.sh base ${wl} with_gc
+        done
+    done
+}
 
-    ./test_numa_traffic.sh org pypper ${wl} 1 > pypper.txt 2>&1
-    sleep 5
-    echo "finish pypper"
-    # ./test_numa_traffic.sh org tpp ${wl} > tpp.txt 2>&1
-    # sleep 5
-    # echo "finish tpp"
-    ./test_numa_traffic.sh org normal ${wl} > normal.txt 2>&1
-    sleep 5
-    echo "finish normal"
-    ./test_numa_traffic.sh org autonuma ${wl} > autonuma.txt 2>&1
-    echo "finish autonuma"
-    echo "finish all, congrats!"
-    # ./do_damo.sh org ${wl} >>out.txt 2>&1
-    # ~/workspace/cpython/python workload/${wl}.py > out.txt 2>&1
-done
+dry_run() {
+    for wl in "${workloads[@]}"; do
+        echo "----------running $wl w/ gc-------------"
+        ~/workspace/cpython/python ./workload/${wl}.py with_gc 1
+    done
+}
+echo >out.txt
+gen_with_traces >>out.txt 2>&1
+
+# dry_run >>out.txt 2>&1

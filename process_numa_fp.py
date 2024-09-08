@@ -5,6 +5,11 @@ import numpy as np
 
 file_path = sys.argv[1]
 output_img = sys.argv[2]
+if (len(sys.argv) > 3):
+    gc_stat = sys.argv[3]
+else:
+    gc_stat = ""
+
 if output_img == None:
     exit(1)
 df = pd.read_csv(file_path, sep=':', header=None, names=['Node', 'Memory_MB'])
@@ -39,7 +44,7 @@ plt.title('Memory Footprint for DRAM and CXL')
 plt.xlabel('Time')
 plt.ylabel('Memory Footprint(MB)')
 plt.legend()
-plt.savefig('traces/' + output_img + '_fp.png')
+plt.savefig('traces/' + output_img + "_" + gc_stat + '_fp.png')
 
 # get combined max
 node_0 = node_0.reset_index()
@@ -57,4 +62,4 @@ combined['Total_Memory_Used'] = combined['Node_0_Memory'] + \
     combined['Node_1_Memory']
 max_combined_memory = combined['Total_Memory_Used'].max()
 
-print("Max mem total: ", max_combined_memory)
+print("Max mem total: ", max_combined_memory, " MB")

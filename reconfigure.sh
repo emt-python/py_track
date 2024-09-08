@@ -6,7 +6,6 @@ echo "Please hit enter to continue..."
 read
 echo "reconfiguring..."
 
-# sudo apt-get install libffi-dev
 # if changed the Pyobject header, remember to rebuild cython
 $HOME/workspace/$BUILD/python -m pip uninstall -y setuptools Cython cython
 $HOME/workspace/$BUILD/python -m pip install setuptools

@@ -112,9 +112,9 @@ static PyObject *start_count_gc_list(PyObject *self, PyObject *args)
     unsigned int sample_dur; // sampling duration, for slow scan, in us
     const char *file;        // file name for post processing
     unsigned int doIO;       // do IO or not
-    int metadata_resv;
-    unsigned int cutoff_limit;
-    int skip_future_slow_thresh;
+    int metadata_resv;       // threshold to trigger EMT, in mb
+    unsigned int cutoff_limit; // each slow scan last duration, in us
+    int skip_future_slow_thresh; // skip future slow scan if the accumulated slow scan time is too long
     if (!PyArg_ParseTuple(args, "i|siiii", &sample_dur, &file, &doIO, &metadata_resv, &cutoff_limit, &skip_future_slow_thresh))
     {
         return NULL; // error

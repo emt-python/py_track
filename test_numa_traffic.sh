@@ -4,44 +4,52 @@
 env=$1
 if [ "$2" = "tpp" ]; then
     python_bin=$HOME/workspace/cpython_org/python
-    ./setup_tpp.sh enable
+    # ./setup_tpp.sh enable
 elif [ "$2" = "pypper" ]; then
     python_bin=$HOME/workspace/cpython/python
-    ./setup_tpp.sh disable
+    # ./setup_tpp.sh disable
 elif [ "$2" = "normal" ]; then
     python_bin=$HOME/workspace/cpython_org/python
-    ./setup_tpp.sh disable
+    # ./setup_tpp.sh disable
 elif [ "$2" = "autonuma" ]; then
     python_bin=$HOME/workspace/cpython_org/python
-    ./setup_tpp.sh autonuma
+    # ./setup_tpp.sh autonuma
 else
     echo "Invalid argument for python executable"
     exit 1
 fi
 workload_name=$3
-enable_pypper=$4
+gc_stat=$4
+enable_pypper=$5
 workload_file=$workload_name".py"
 profile_name="${workload_name}"
 echo running $workload_file in $env using $2
 
-gen_bw() {
+gen_fp() {
     local check_pid=$1
-    BW_PCM_FILE=./bw_raw.csv
     MEM_FP_FILE=./fp_raw.csv
     rm -rf $MEM_FP_FILE
-    # sudo pcm-memory 0.1 -csv=$BW_PCM_FILE -silent &
     while [ -d "/proc/${check_pid}" ]; do
         numactl -H | grep free >>$MEM_FP_FILE
         sleep 0.1
     done
-    # sudo pkill -9 pcm-memory >/dev/null 2>&1
     sleep 1
 
-    python3 ./process_numa_fp.py $MEM_FP_FILE $profile_name
-    # python3 ./process_numa_mem.py $BW_PCM_FILE $profile_name bw
-    # echo "gen bw,fp done"
-    # gnuplot -e "output_file='./traces/${profile_name}_bw.png'; input_file='./traces/${profile_name}_bw.csv'; wl_title='Memory Bandwidth'" ./plot_bw.gnuplot
-    # echo "plot bw done"
+    python3 ./process_numa_fp.py $MEM_FP_FILE $profile_name $gc_stat
+}
+
+gen_bw() {
+    local check_pid=$1
+    BW_PCM_FILE=./bw_raw.csv
+    rm -rf $BW_PCM_FILE
+    sudo pcm-memory 0.1 -csv=$BW_PCM_FILE -silent &
+    while [ -d "/proc/${check_pid}" ]; do
+        sleep 0.1
+    done
+    sudo pkill -9 pcm-memory >/dev/null 2>&1
+    python3 ./process_numa_mem.py $BW_PCM_FILE $profile_name $gc_stat
+    gnuplot -e "output_file='./traces/${profile_name}_${gc_stat}_bw.png'; input_file='./traces/${profile_name}_${gc_stat}_bw.csv'; wl_title='Memory Bandwidth'" ./plot_bw.gnuplot
+
 }
 get_all_rss() {
     local rss_file="rss_values.txt"
@@ -65,7 +73,7 @@ get_DRAM_size() {
     local MIN_MEMORY=999999999
     local MAX_MEMORY=0
 
-    while kill -0 $check_pid 2> /dev/null; do
+    while kill -0 $check_pid 2>/dev/null; do
         local CURRENT_FREE=$(numactl -H | grep "node 0 free:" | awk '{print $4}')
         # echo $CURRENT_FREE
 
@@ -109,23 +117,25 @@ pkill -9 memeater
 echo 3 | sudo tee /proc/sys/vm/drop_caches
 
 # sleep 10 &
-if [ -n "$enable_pypper" ]; then
-    # echo "Do nothing"
-    echo "Running memeater 1.8G"
-    $HOME/workspace/py_track/memeater 1.8 &
-    hogger_pid=$!
-    sleep 10
-fi
-numactl -H | grep "node 0 free"
-$cmd_prefix $python_bin $HOME/workspace/py_track/workload/$workload_file $enable_pypper &
-
+# if [ -n "$enable_pypper" ]; then
+#     # echo "Do nothing"
+#     echo "Running memeater 1.8G"
+#     $HOME/workspace/py_track/memeater 1.8 &
+#     hogger_pid=$!
+#     sleep 10
+# fi
+$cmd_prefix $python_bin $HOME/workspace/py_track/workload/$workload_file $gc_stat $enable_pypper &
+# sleep 10 &
+# ./memeater 40960 &
 check_pid=$!
-# gen_bw $check_pid
-get_all_rss $check_pid &
-get_DRAM_size $check_pid
 
-if [ -n "$enable_pypper" ]; then
-    echo "Stop hogger"
-    kill -9 $hogger_pid
-fi
+# gen_bw $check_pid &
+gen_fp $check_pid &
+get_all_rss $check_pid
+# get_DRAM_size $check_pid
+
+# if [ -n "$enable_pypper" ]; then
+#     echo "Stop hogger"
+#     kill -9 $hogger_pid
+# fi
 sleep 2

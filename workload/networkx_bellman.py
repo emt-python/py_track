@@ -9,10 +9,20 @@ if sys.executable == os.path.expanduser("~/workspace/cpython/python"):
     import gc_count_module
     is_pypper = True
 
+if sys.argv[1] == "no_gc":
+    print("running no gc")
+    import gc
+    gc.disable()
+elif sys.argv[1] == "with_gc":
+    print("running with gc")
+else:
+    print("Using GC or not? Forget to specify?")
+
 enable_tracing = False
-if len(sys.argv) != 1:
+if len(sys.argv) != 2:
     print("enable tracing")
     enable_tracing = True
+
 
 def create_large_dense_graph(num_nodes):
     G = nx.Graph()
@@ -71,20 +81,18 @@ def compute_bellman(G):
 # 6000: 3216 MB
 if __name__ == "__main__":
     num_nodes = 9000
-    num_edges = 1000
     # G = nx.gnp_random_graph(10000, 0.5, seed=42, directed=True)
     # nx.set_edge_attributes(G, {e: random.randint(1, 10)
     #                        for e in G.edges()}, 'weight')
     start_creating = time.time()
     G = create_large_dense_graph(num_nodes)
-    # G = create_large_dense_graph_with_edges(num_nodes, num_edges)
     creation_time = time.time() - start_creating
     print(f"Creation time: {creation_time:.2f} seconds", file=sys.stderr)
 
     start_comp = time.time()
     if is_pypper and enable_tracing:
         gc_count_module.start_count_gc_list(
-            1_000_000, "obj_dump.txt", 0, 1024, 1_000_000, 5)
+            250_000, "obj_dump.txt", 0, 1024, 1_000_000, 5)
     compute_bellman(G)
     if is_pypper and enable_tracing:
         gc_count_module.close_count_gc_list()

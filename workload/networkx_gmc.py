@@ -10,8 +10,17 @@ if sys.executable == os.path.expanduser("~/workspace/cpython/python"):
     import gc_count_module
     is_pypper = True
 
+if sys.argv[1] == "no_gc":
+    print("running no gc")
+    import gc
+    gc.disable()
+elif sys.argv[1] == "with_gc":
+    print("running with gc")
+else:
+    print("Using GC or not? Forget to specify?")
+
 enable_tracing = False
-if len(sys.argv) != 1:
+if len(sys.argv) != 2:
     print("enable tracing")
     enable_tracing = True
 
@@ -53,7 +62,7 @@ def bfs_edges_from_source(G, source):
     return bfs_tree_edges
 
 
-num_nodes = 15000
+num_nodes = 10000  # was 9000
 num_edges = 300000
 
 start_creating = time.time()
