@@ -4,16 +4,16 @@
 env=$1
 if [ "$2" = "tpp" ]; then
     python_bin=$HOME/workspace/cpython_org/python
-    # ./setup_tpp.sh enable
+    ./setup_tpp.sh enable
 elif [ "$2" = "pypper" ]; then
     python_bin=$HOME/workspace/cpython/python
-    # ./setup_tpp.sh disable
+    ./setup_tpp.sh disable
 elif [ "$2" = "normal" ]; then
     python_bin=$HOME/workspace/cpython_org/python
-    # ./setup_tpp.sh disable
+    ./setup_tpp.sh disable
 elif [ "$2" = "autonuma" ]; then
     python_bin=$HOME/workspace/cpython_org/python
-    # ./setup_tpp.sh autonuma
+    ./setup_tpp.sh autonuma
 else
     echo "Invalid argument for python executable"
     exit 1

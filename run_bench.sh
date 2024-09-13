@@ -1,10 +1,36 @@
 #!/bin/bash
 # echo 2 | sudo tee /proc/sys/vm/panic_on_oom
+solution=$1
+LOG_FILE=out.txt
+
 cmd_prefix="numactl --cpunodebind 0 --preferred 0 -- "
-python_bin=/home/lyuze/workspace/cpython/python
-workloads=("networkx_ac" "networkx_astar" "networkx_bc" "networkx_bellman" "networkx_bfs_rand" "networkx_bfs" "networkx_bidirectional"
-    "networkx_gmc" "networkx_kc" "networkx_lc" "networkx_mmm" "networkx_sp" "networkx_tc")
+if [ "$solution" = "tpp" ]; then
+    python_bin=$HOME/workspace/cpython_org/python
+    KERN_RESERVE=0
+    ./setup_tpp.sh enable
+elif [ "$solution" = "pypper" ]; then
+    python_bin=$HOME/workspace/cpython/python
+    KERN_RESERVE=75
+    ./setup_tpp.sh disable
+elif [ "$solution" = "normal" ]; then
+    python_bin=$HOME/workspace/cpython_org/python
+    KERN_RESERVE=75
+    ./setup_tpp.sh disable
+elif [ "$solution" = "autonuma" ]; then
+    python_bin=$HOME/workspace/cpython_org/python
+    KERN_RESERVE=0
+    ./setup_tpp.sh autonuma
+    cmd_prefix=""
+else
+    echo "Invalid argument for python executable"
+    exit 1
+fi
+
+workloads=("networkx_astar" "networkx_bc" "networkx_bellman" "networkx_bfs_rand" "networkx_bfs"
+    "networkx_bidirectional" "networkx_kc" "networkx_lc" "networkx_sp" "networkx_tc")
+# workloads=("networkx_astar")
 mem_splits=("25" "50" "75" "100")
+# mem_splits=("25" "25")
 gen_with_traces() {
     for wl in "${workloads[@]}"; do
         for split in "${mem_splits[@]}"; do
@@ -14,7 +40,11 @@ gen_with_traces() {
             echo 3 | sudo tee /proc/sys/vm/drop_caches
 
             trap '$cmd_prefix $python_bin $SCRIPT with_gc 1 & check_pid=$!; wait $check_pid' SIGUSR1
-            stdbuf -oL ./memeater $BENCH_DRAM $$ &
+            if [ "$solution" = "pypper" ]; then
+                stdbuf -oL ./memeater $BENCH_DRAM $KERN_RESERVE reserve_extra $$ &
+            else
+                stdbuf -oL ./memeater $BENCH_DRAM $KERN_RESERVE no_extra $$ &
+            fi
             MEMAETER_PID=$!
             wait $MEMAETER_PID
             echo "killing memeaterr"
@@ -41,7 +71,8 @@ dry_run() {
         ~/workspace/cpython/python ./workload/${wl}.py with_gc 1
     done
 }
-echo >out.txt
-gen_with_traces >>out.txt 2>&1
+
+echo "Start running $solution ***************" >>$LOG_FILE 2>&1
+gen_with_traces >>$LOG_FILE 2>&1
 
 # dry_run >>out.txt 2>&1
