@@ -9,6 +9,11 @@
 *.so
 *.pyc
 *.out
+*.egg
 out.txt
 traces/*
 dist/*
+
+build
+eat
+memeater

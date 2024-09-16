@@ -20,3 +20,7 @@ cd ~/workspace/py_track
 rm -rf build
 $HOME/workspace/cpython/python ./setup_gc_count_list.py build_ext --inplace
 $HOME/workspace/cpython/python ./setup_gc_count_list.py install --install-lib ~/.local/lib/python3.12/site-packages
+
+# build memeater and eats
+gcc -o memeater memeater.c -lnuma -O3
+gcc -o eat eat.c -lnuma -O3

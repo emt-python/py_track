@@ -21,7 +21,7 @@ void allocate_until_reserved_on_node_0(size_t reserved_bytes, size_t kernel_rese
     size_t mb_size = 1024 * 1024;
     size_t allocation_step = gb_size;
 
-    long long free_dram_size;
+    long free_dram_size;
     numa_node_size(DRAM_MASK, &free_dram_size);
     size_t total_allocated = 0;
 
@@ -61,7 +61,7 @@ void allocate_until_reserved_on_node_0(size_t reserved_bytes, size_t kernel_rese
         //        total_allocated / (1024 * 1024), free_dram_size / (1024 * 1024), allocation_step / (1024 * 1024));
     }
 
-    printf("Reserved memory threshold reached. Remaining free memory: %lld MB\n", free_dram_size / (1024 * 1024));
+    printf("Reserved memory threshold reached. Remaining free memory: %ld MB\n", free_dram_size / (1024 * 1024));
     // printf("Memory allocation completed. Total allocated: %zu MB\n", total_allocated / (1024 * 1024));
     if (shell_pid != 0)
         kill(shell_pid, SIGUSR1);
@@ -141,6 +141,8 @@ int main(int argc, char *argv[])
     {
         shell_pid = 0;
     }
+    // pid_t my_pid = getpid();
+    // printf("memeater pid: %d\n", my_pid);
 
     size_t reserved_bytes = reserved_mb * 1024 * 1024;
     size_t kernel_reserved_bytes = kernel_reserved_mb * 1024 * 1024;

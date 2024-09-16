@@ -1,6 +1,6 @@
 #!/bin/bash
 DRAM_RATIO=$1
-BIN=/home/lyuze/workspace/py_track/workload
+BIN=$HOME/workspace/py_track/workload
 # if [[ -z "$1" ]]; then
 SCRIPT="${BIN}/networkx_ac.py"
 # else
