@@ -11,11 +11,11 @@ if [ "$solution" = "tpp" ]; then
     ./setup_tpp.sh enable
 elif [ "$solution" = "pypper" ]; then
     python_bin=$HOME/workspace/cpython/python
-    KERN_RESERVE=161
+    KERN_RESERVE=75
     ./setup_tpp.sh disable
 elif [ "$solution" = "normal" ]; then
     python_bin=$HOME/workspace/cpython_org/python
-    KERN_RESERVE=161
+    KERN_RESERVE=75
     ./setup_tpp.sh disable
 elif [ "$solution" = "autonuma" ]; then
     python_bin=$HOME/workspace/cpython_org/python
@@ -27,11 +27,11 @@ else
     exit 1
 fi
 
-workloads=("networkx_astar" "networkx_bc" "networkx_bellman" "networkx_bfs_rand" "networkx_bfs"
-    "networkx_bidirectional" "networkx_kc" "networkx_lc" "networkx_sp" "networkx_tc")
-# workloads=("networkx_astar")
-mem_splits=("25" "50" "75" "100")
-# mem_splits=("25" "25")
+# workloads=("networkx_astar" "networkx_bc" "networkx_bellman" "networkx_bfs_rand" "networkx_bfs"
+#     "networkx_bidirectional" "networkx_kc" "networkx_lc" "networkx_sp" "networkx_tc")
+workloads=("networkx_astar")
+# mem_splits=("25" "50" "75" "100")
+mem_splits=("25")
 gen_with_traces() {
     for wl in "${workloads[@]}"; do
         for split in "${mem_splits[@]}"; do

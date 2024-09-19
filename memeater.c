@@ -9,24 +9,64 @@
 #include <sys/sysinfo.h>
 #include <signal.h>
 #include <stdbool.h>
+#include <pthread.h>
 #define EMT_RESERVE 630
 
 #define DRAM_MASK 0
-// void allocate_until_reserved_on_node_0(size_t reserved_bytes, pid_t shell_pid)
+void **allocated_mem = NULL;
+size_t allocated_mem_count = 0;
+size_t mb_size = 1024 * 1024;
+unsigned int seed;
+int thread_safe_rand(unsigned int *seed)
+{
+    return rand_r(seed);
+}
+int num_threads = 1; // Number of threads (adjust as needed)
+void *thread_access(void *arg)
+{
+    int thread_id = *(int *)arg;
+    size_t block_size = allocated_mem_count / num_threads;
+    size_t start = thread_id * block_size;
+    size_t end = (thread_id == num_threads - 1) ? allocated_mem_count : start + block_size;
+    printf("block_size: %ld, start: %ld, end %ld\n", block_size, start, end);
+    unsigned int local_seed = time(NULL) + thread_id;
+    // while (1)
+    {
+        for (size_t i = start; i < end; i++)
+        {
+            // Generate a thread-safe random index in the range [start, end)
+            int random_index = start + (thread_safe_rand(&local_seed) % (end - start));
+            if (random_index < 300)
+                continue;
+            printf("random_index: %d, allocated_mem addr: %p\n", random_index, allocated_mem[random_index]);
+            if (allocated_mem[random_index] != NULL)
+            {
+                memset(allocated_mem[random_index], 1, mb_size);
+            }
+        }
+    }
+    return NULL;
+}
+void intensive_memory_operation(void *mem_block, size_t size)
+{
+    unsigned char *block = (unsigned char *)mem_block;
+    for (size_t i = 0; i < size; i++)
+    {
+        unsigned char value = block[i];
+        value = (value + 13) % 256;
+        block[i] = value;
+    }
+}
 void allocate_until_reserved_on_node_0(size_t reserved_bytes, size_t kernel_reserved_bytes, bool reserve_extra, pid_t shell_pid)
 {
     long long emt_metadata_bytes = 0;
 
     size_t gb_size = 1024 * 1024 * 1024;
-    size_t mb_size = 1024 * 1024;
-    size_t allocation_step = gb_size;
+    size_t allocation_step = mb_size;
 
     long free_dram_size;
     numa_node_size(DRAM_MASK, &free_dram_size);
-    size_t total_allocated = 0;
 
-    void **allocated_mem = NULL; // Array to store pointers to allocated memory
-    size_t allocated_mem_count = 0;
     if (reserve_extra)
         emt_metadata_bytes = EMT_RESERVE * mb_size; // to accomodate extra data (emt metadata + system reserve)
     printf("start reserving memory\n");
@@ -39,12 +79,6 @@ void allocate_until_reserved_on_node_0(size_t reserved_bytes, size_t kernel_rese
             exit(EXIT_FAILURE);
         }
 
-        // if (free_dram_size <= reserved_bytes + (2 * gb_size))
-        if (free_dram_size <= (10 * gb_size))
-        {
-            allocation_step = mb_size;
-        }
-
         void *mem = numa_alloc_onnode(allocation_step, 0);
         if (mem == NULL)
         {
@@ -55,18 +89,38 @@ void allocate_until_reserved_on_node_0(size_t reserved_bytes, size_t kernel_rese
         allocated_mem[allocated_mem_count] = mem;
         allocated_mem_count++;
 
-        total_allocated += allocation_step;
         numa_node_size(DRAM_MASK, &free_dram_size);
-        // printf("Allocated %zu MB so far. Free memory: %lld MB. Step size: %zu MB\n",
-        //        total_allocated / (1024 * 1024), free_dram_size / (1024 * 1024), allocation_step / (1024 * 1024));
+    }
+    for (int i = 0; i < allocated_mem_count; i++)
+    {
+        memset(allocated_mem[i], 1, allocation_step);
     }
 
     printf("Reserved memory threshold reached. Remaining free memory: %ld MB\n", free_dram_size / (1024 * 1024));
-    // printf("Memory allocation completed. Total allocated: %zu MB\n", total_allocated / (1024 * 1024));
+    printf("allocated_mem_count: %ld\n", allocated_mem_count);
+    // pthread_t threads[num_threads];
+    // int thread_ids[num_threads];
+    // for (int i = 0; i < num_threads; i++)
+    // {
+    //     thread_ids[i] = i;
+    //     if (pthread_create(&threads[i], NULL, thread_access, &thread_ids[i]) != 0)
+    //     {
+    //         perror("Failed to create thread");
+    //         exit(EXIT_FAILURE);
+    //     }
+    // }
     if (shell_pid != 0)
         kill(shell_pid, SIGUSR1);
     while (1)
-        sleep(1);
+    {
+
+        for (int i = 0; i < allocated_mem_count; i++)
+        {
+            int random_index = rand() % allocated_mem_count;
+            // memset(allocated_mem[random_index], 1, mb_size);
+            intensive_memory_operation(allocated_mem[random_index], mb_size);
+        }
+    }
     for (size_t i = 0; i < allocated_mem_count; i++)
     {
         numa_free(allocated_mem[i], allocation_step);
@@ -141,8 +195,8 @@ int main(int argc, char *argv[])
     {
         shell_pid = 0;
     }
-    // pid_t my_pid = getpid();
-    // printf("memeater pid: %d\n", my_pid);
+    pid_t my_pid = getpid();
+    printf("memeater pid: %d\n", my_pid);
 
     size_t reserved_bytes = reserved_mb * 1024 * 1024;
     size_t kernel_reserved_bytes = kernel_reserved_mb * 1024 * 1024;
