@@ -11,11 +11,11 @@ if [ "$solution" = "tpp" ]; then
     ./setup_tpp.sh enable
 elif [ "$solution" = "pypper" ]; then
     python_bin=$HOME/workspace/cpython/python
-    KERN_RESERVE=75
+    KERN_RESERVE=161
     ./setup_tpp.sh disable
 elif [ "$solution" = "normal" ]; then
     python_bin=$HOME/workspace/cpython_org/python
-    KERN_RESERVE=75
+    KERN_RESERVE=161
     ./setup_tpp.sh disable
 elif [ "$solution" = "autonuma" ]; then
     python_bin=$HOME/workspace/cpython_org/python

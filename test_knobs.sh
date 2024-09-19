@@ -5,7 +5,7 @@ LOG_FILE=out.txt
 EMT_METADATA="no_extra"
 
 python_bin=$HOME/workspace/cpython/python
-KERN_RESERVE=120
+KERN_RESERVE=156
 ./setup_tpp.sh disable
 
 workloads=("networkx_astar" "networkx_bellman" "networkx_bidirectional" "networkx_kc" "networkx_sp")
