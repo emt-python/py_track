@@ -3,33 +3,33 @@
 solution=$1
 LOG_FILE=out.txt
 EMT_METADATA="no_extra"
-
 cmd_prefix="numactl --cpunodebind 0 --preferred 0 -- "
-if [ "$solution" = "tpp" ]; then
-    python_bin=$HOME/workspace/cpython_org/python
-    KERN_RESERVE=0
-    ./setup_tpp.sh enable
-elif [ "$solution" = "pypper" ]; then
-    python_bin=$HOME/workspace/cpython/python
-    KERN_RESERVE=75
-    ./setup_tpp.sh disable
-elif [ "$solution" = "normal" ]; then
-    python_bin=$HOME/workspace/cpython_org/python
-    KERN_RESERVE=75
-    ./setup_tpp.sh disable
-elif [ "$solution" = "autonuma" ]; then
-    python_bin=$HOME/workspace/cpython_org/python
-    KERN_RESERVE=0
-    ./setup_tpp.sh autonuma
-    cmd_prefix=""
-else
-    echo "Invalid argument for python executable"
-    exit 1
-fi
+# if [ "$solution" = "tpp" ]; then
+#     python_bin=$HOME/workspace/cpython_org/python
+#     KERN_RESERVE=0
+#     ./setup_tpp.sh enable
+# elif [ "$solution" = "pypper" ]; then
+#     python_bin=$HOME/workspace/cpython/python
+#     KERN_RESERVE=75
+#     ./setup_tpp.sh disable
+# elif [ "$solution" = "normal" ]; then
+#     python_bin=$HOME/workspace/cpython_org/python
+#     KERN_RESERVE=75
+#     ./setup_tpp.sh disable
+# elif [ "$solution" = "autonuma" ]; then
+#     python_bin=$HOME/workspace/cpython_org/python
+#     KERN_RESERVE=0
+#     ./setup_tpp.sh autonuma
+#     cmd_prefix=""
+# else
+#     echo "Invalid argument for python executable"
+#     exit 1
+# fi
+source setup_env.sh $solution
 
 # workloads=("networkx_astar" "networkx_bc" "networkx_bellman" "networkx_bfs_rand" "networkx_bfs"
 #     "networkx_bidirectional" "networkx_kc" "networkx_lc" "networkx_sp" "networkx_tc")
-workloads=("networkx_astar")
+workloads=("networkx_sp")
 # mem_splits=("25" "50" "75" "100")
 mem_splits=("25")
 gen_with_traces() {

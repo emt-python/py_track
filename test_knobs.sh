@@ -5,8 +5,7 @@ LOG_FILE=out.txt
 EMT_METADATA="no_extra"
 
 python_bin=$HOME/workspace/cpython/python
-KERN_RESERVE=156
-./setup_tpp.sh disable
+source ./setup_env.sh pypper
 
 workloads=("networkx_astar" "networkx_bellman" "networkx_bidirectional" "networkx_kc" "networkx_sp")
 # workloads=("networkx_astar")
