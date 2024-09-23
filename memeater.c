@@ -10,7 +10,8 @@
 #include <signal.h>
 #include <stdbool.h>
 #include <pthread.h>
-#define EMT_RESERVE 630
+// #define EMT_RESERVE 630 // this is with obj_temp 16 bytes
+#define EMT_RESERVE 790 // this is with obj_temp 20 bytes
 
 #define DRAM_MASK 0
 void **allocated_mem = NULL;
