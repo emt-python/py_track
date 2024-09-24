@@ -11,8 +11,17 @@ if sys.executable == os.path.expanduser("~/workspace/cpython/python"):
     import gc_count_module
     is_pypper = True
 
+if sys.argv[1] == "no_gc":
+    print("running no gc")
+    import gc
+    gc.disable()
+elif sys.argv[1] == "with_gc":
+    print("running with gc")
+else:
+    print("Using GC or not? Forget to specify?")
+
 enable_tracing = False
-if len(sys.argv) != 1:
+if len(sys.argv) != 2:
     print("enable tracing")
     enable_tracing = True
 
@@ -25,8 +34,10 @@ if os.path.exists("hospitality_complex.db"):
 
 # Many-to-many relationship table for waiters and tables
 waiter_table = Table('waiter_table', Base.metadata,
-                     Column('waiter_id', Integer, ForeignKey('waiters.id'), primary_key=True),
+                     Column('waiter_id', Integer, ForeignKey(
+                         'waiters.id'), primary_key=True),
                      Column('table_id', Integer, ForeignKey('tables.id'), primary_key=True))
+
 
 class Waiter(Base):
     __tablename__ = 'waiters'
@@ -34,7 +45,9 @@ class Waiter(Base):
     name = Column(String)
     biography = Column(Text)  # Adding a large text field
     image = Column(LargeBinary)  # New binary data field
-    tables = relationship('Table', secondary=waiter_table, back_populates='waiters')
+    tables = relationship('Table', secondary=waiter_table,
+                          back_populates='waiters')
+
 
 class Table(Base):
     __tablename__ = 'tables'
@@ -43,7 +56,9 @@ class Table(Base):
     description = Column(Text)  # Adding a large text field
     restaurant_id = Column(Integer, ForeignKey('restaurants.id'))
     restaurant = relationship('Restaurant', back_populates='tables')
-    waiters = relationship('Waiter', secondary=waiter_table, back_populates='tables')
+    waiters = relationship(
+        'Waiter', secondary=waiter_table, back_populates='tables')
+
 
 class Restaurant(Base):
     __tablename__ = 'restaurants'
@@ -53,6 +68,7 @@ class Restaurant(Base):
     image = Column(LargeBinary)  # New binary data field
     tables = relationship('Table', back_populates='restaurant')
 
+
 engine = create_engine('sqlite:///hospitality_complex.db')
 Base.metadata.create_all(engine)
 
@@ -61,12 +77,14 @@ session = Session()
 
 # Create restaurants with larger data footprint
 start_adding = time.time()
-restaurants = [Restaurant(name=fake.company(), description=fake.paragraph(nb_sentences=50), image=os.urandom(1*1024*1024)) for _ in range(2000)]
+restaurants = [Restaurant(name=fake.company(), description=fake.paragraph(
+    nb_sentences=50), image=os.urandom(1*1024*1024)) for _ in range(2000)]
 session.add_all(restaurants)
 session.commit()
 
 # Create waiters with larger data footprint
-waiters = [Waiter(name=fake.name(), biography=fake.paragraph(nb_sentences=100), image=os.urandom(1*1024*1024)) for _ in range(2000)]
+waiters = [Waiter(name=fake.name(), biography=fake.paragraph(
+    nb_sentences=100), image=os.urandom(1*1024*1024)) for _ in range(2000)]
 session.add_all(waiters)
 session.commit()
 add_time = time.time() - start_adding
@@ -82,7 +100,8 @@ for _ in range(50000):
         number=fake.building_number(),
         description=fake.paragraph(nb_sentences=20),
         restaurant=random.choice(restaurants),
-        waiters=random.sample(waiters, k=random.randint(1, 20))  # Increase complexity
+        # Increase complexity
+        waiters=random.sample(waiters, k=random.randint(1, 20))
     )
     session.add(table)
 session.commit()
