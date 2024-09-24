@@ -88,7 +88,7 @@ waiters = [Waiter(name=fake.name(), biography=fake.paragraph(
 session.add_all(waiters)
 session.commit()
 add_time = time.time() - start_adding
-print(f"Creating data time: {add_time:.2f} seconds")
+print(f"Creating data time: {add_time:.2f} seconds", file=sys.stderr)
 
 # Assign tables to restaurants and waiters with more complexity
 start_assigning = time.time()
@@ -108,7 +108,7 @@ session.commit()
 if is_pypper and enable_tracing:
     gc_count_module.close_count_gc_list()
 assign_time = time.time() - start_assigning
-print(f"Compute time: {assign_time:.2f} seconds")
+print(f"Compute time: {assign_time:.2f} seconds", file=sys.stderr)
 
 print("Database populated with an extremely large footprint.")
 os.remove("hospitality_complex.db")

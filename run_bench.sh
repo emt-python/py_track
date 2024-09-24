@@ -29,9 +29,9 @@ source setup_env.sh $solution
 
 # workloads=("networkx_astar" "networkx_bc" "networkx_bellman" "networkx_bfs_rand" "networkx_bfs"
 #     "networkx_bidirectional" "networkx_kc" "networkx_lc" "networkx_sp" "networkx_tc")
-workloads=("networkx_sp")
-# mem_splits=("25" "50" "75" "100")
-mem_splits=("25")
+workloads=("bm_sqlalchemy" "bm_sqlalchemy_new")
+mem_splits=("25" "50" "75" "100")
+# mem_splits=("25")
 gen_with_traces() {
     for wl in "${workloads[@]}"; do
         for split in "${mem_splits[@]}"; do
