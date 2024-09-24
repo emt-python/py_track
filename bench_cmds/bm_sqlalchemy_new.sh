@@ -8,16 +8,25 @@ SCRIPT="${BIN}/bm_sqlalchemy_new.py"
 # fi
 
 # 4725 MB
+# 1182
+# 2363
+# 3545
+
+# or 8993 MB
+# 2248
+# 4496
+# 6744
+# 80000
 BENCH_DRAM=""
 
 if [[ "x${DRAM_RATIO}" == "x25" ]]; then
-    BENCH_DRAM="1182"
+    BENCH_DRAM="2248"
 elif [[ "x${DRAM_RATIO}" == "x50" ]]; then
-    BENCH_DRAM="2363"
+    BENCH_DRAM="4496"
 elif [[ "x${DRAM_RATIO}" == "x75" ]]; then
-    BENCH_DRAM="3545"
+    BENCH_DRAM="6744"
 elif [[ "x${DRAM_RATIO}" == "x100" ]]; then
-    BENCH_DRAM="8000"
+    BENCH_DRAM="80000"
 fi
 
 export SCRIPT

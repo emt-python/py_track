@@ -35,32 +35,34 @@ mem_splits=("25" "50" "75" "100")
 gen_with_traces() {
     for wl in "${workloads[@]}"; do
         for split in "${mem_splits[@]}"; do
-            if [ "$solution" = "pypper" ] && [ "$split" != "100" ]; then
-                EMT_METADATA="reserve_extra"
-            fi
-            source bench_cmds/${wl}.sh $split
-            echo "----------running $wl w/ $split-------------"
-            pkill -9 memeater
-            echo 3 | sudo tee /proc/sys/vm/drop_caches
+            for runs in {1..3}; do
+                if [ "$solution" = "pypper" ] && [ "$split" != "100" ]; then
+                    EMT_METADATA="reserve_extra"
+                fi
+                source bench_cmds/${wl}.sh $split
+                echo "----------running $wl w/ $split-------------"
+                pkill -9 memeater
+                echo 3 | sudo tee /proc/sys/vm/drop_caches
 
-            trap '$cmd_prefix $python_bin $SCRIPT with_gc 1 & check_pid=$!; wait $check_pid' SIGUSR1
-            stdbuf -oL ./memeater $BENCH_DRAM $KERN_RESERVE $EMT_METADATA $$ &
-            MEMAETER_PID=$!
-            wait $MEMAETER_PID
-            echo "killing memeaterr"
-            kill -9 $MEMAETER_PID
-            # ./test_numa_traffic.sh base pypper ${wl} with_gc 1
-            sleep 10
+                trap '$cmd_prefix $python_bin $SCRIPT with_gc 1 & check_pid=$!; wait $check_pid' SIGUSR1
+                stdbuf -oL ./memeater $BENCH_DRAM $KERN_RESERVE $EMT_METADATA $$ &
+                MEMAETER_PID=$!
+                wait $MEMAETER_PID
+                echo "killing memeaterr"
+                kill -9 $MEMAETER_PID
+                # ./test_numa_traffic.sh base pypper ${wl} with_gc 1
+                sleep 10
 
-            # echo 3 | sudo tee /proc/sys/vm/drop_caches
-            # echo "----------running $wl w/ gc cxl -------------"
-            # ./test_numa_traffic.sh cxl normal ${wl} with_gc
-            # sleep 3
+                # echo 3 | sudo tee /proc/sys/vm/drop_caches
+                # echo "----------running $wl w/ gc cxl -------------"
+                # ./test_numa_traffic.sh cxl normal ${wl} with_gc
+                # sleep 3
 
-            # echo "----------running damo $wl w/o gc -------------"
-            # ./do_damo.sh base ${wl} no_gc
-            # echo "----------running damo $wl w/ gc -------------"
-            # ./do_damo.sh base ${wl} with_gc
+                # echo "----------running damo $wl w/o gc -------------"
+                # ./do_damo.sh base ${wl} no_gc
+                # echo "----------running damo $wl w/ gc -------------"
+                # ./do_damo.sh base ${wl} with_gc
+            done
         done
     done
 }

@@ -1,23 +1,9 @@
 #!/bin/bash
 # python_bin=$HOME/workspace/cpython/python
 # python_bin=python3
+# Example: ./test_numa_traffic.sh base normal bm_sqlalchemy with_gc
 env=$1
-if [ "$2" = "tpp" ]; then
-    python_bin=$HOME/workspace/cpython_org/python
-    ./setup_tpp.sh enable
-elif [ "$2" = "pypper" ]; then
-    python_bin=$HOME/workspace/cpython/python
-    ./setup_tpp.sh disable
-elif [ "$2" = "normal" ]; then
-    python_bin=$HOME/workspace/cpython_org/python
-    ./setup_tpp.sh disable
-elif [ "$2" = "autonuma" ]; then
-    python_bin=$HOME/workspace/cpython_org/python
-    ./setup_tpp.sh autonuma
-else
-    echo "Invalid argument for python executable"
-    exit 1
-fi
+source setup_env.sh $2
 workload_name=$3
 gc_stat=$4
 enable_pypper=$5
@@ -53,6 +39,7 @@ gen_bw() {
 }
 get_all_rss() {
     local rss_file="rss_values.txt"
+    rm $rss_file
     local check_pid=$1
 
     while kill -0 $check_pid 2>/dev/null; do
@@ -63,8 +50,6 @@ get_all_rss() {
     local max_rss=$(sort -n $rss_file | tail -1)
     local rss_MB=$((max_rss / 1024))
     echo "Max RSS: $rss_MB" MB
-
-    rm $rss_file
 }
 
 get_DRAM_size() {
