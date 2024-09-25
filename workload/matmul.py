@@ -45,10 +45,10 @@ def matrix_multiply():
     # max_str_length = 5
     # matrix_A = generate_matrix(matrix_size, max_str_length)
     # matrix_B = generate_matrix(matrix_size, max_str_length)
-    matrix_A = random.sample(range(30000, 400000), matrix_size * matrix_size)
+    matrix_A = random.sample(range(30000, 5000000), matrix_size * matrix_size)
     matrix_A = [matrix_A[i:i+matrix_size]
                 for i in range(0, len(matrix_A), matrix_size)]
-    matrix_B = random.sample(range(400000, 800000),
+    matrix_B = random.sample(range(5000000, 9400000),
                              matrix_size * matrix_size)
     matrix_B = [matrix_B[i:i+matrix_size]
                 for i in range(0, len(matrix_B), matrix_size)]

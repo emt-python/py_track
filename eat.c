@@ -24,13 +24,16 @@ int main()
     }
 
     printf("Allocated memory, allocated_mem_count: %ld\n", allocated_mem_count);
+    int bit = 0;
     while (1)
     {
+
         for (int i = allocated_mem_count - 1; i >= 0; i--)
+        // for (int i = 0; i < allocated_mem_count - 1; i++)
         {
-            memset(allocated_mem[i], 1, mb_size);
+            memset(allocated_mem[i], bit, mb_size);
         }
-        sleep(1);
+        bit = !bit;
     }
 
     // free(memory);
