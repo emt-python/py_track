@@ -10,7 +10,6 @@
 *.pyc
 *.out
 *.egg
-out.txt
 traces/*
 dist/*
 
@@ -19,3 +18,4 @@ eat
 memeater
 dist
 setup_env.sh
+*.log
