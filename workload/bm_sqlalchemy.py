@@ -96,13 +96,13 @@ session.commit()
 add_time = time.time() - start_adding
 print(f"Creating data time: {add_time:.2f} seconds", file=sys.stderr)
 
-# Create Books and randomly assign authors and a publisher to each
 # sys.setswitchinterval(0.0001)
 start_assigning = time.time()
 if is_pypper and enable_tracing:
     gc_count_module.start_count_gc_list(
         250_000, "obj_dump.txt", 0, 1024, 1_000_000, 5)
 
+# Create Books and randomly assign authors and a publisher to each
 publishers = session.query(Publisher).all()
 authors = session.query(Author).all()
 for _ in range(80000):

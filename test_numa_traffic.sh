@@ -98,23 +98,14 @@ echo "cmd_prefix: " $cmd_prefix
 #     cmd_prefix="numactl --cpunodebind 0 -- "
 # elif [ "$env" = "interleave" ]; then
 #     cmd_prefix="numactl --cpunodebind 0 --interleave all -- "
-pkill -9 memeater
 echo 3 | sudo tee /proc/sys/vm/drop_caches
-
-# sleep 10 &
-# if [ -n "$enable_pypper" ]; then
-#     # echo "Do nothing"
-#     echo "Running memeater 1.8G"
-#     $HOME/workspace/py_track/memeater 1.8 &
-#     hogger_pid=$!
-#     sleep 10
-# fi
 $cmd_prefix $python_bin $HOME/workspace/py_track/workload/$workload_file $gc_stat $enable_pypper &
-# sleep 10 &
-# ./memeater 40960 &
 check_pid=$!
 
 # gen_bw $check_pid &
+# spawn_perf_stat.sh $check_pid $workload_name &
+# sudo ./spawn_pcm.sh $check_pid $workload_name
+# sleep 2
 gen_fp $check_pid &
 get_all_rss $check_pid
 # get_DRAM_size $check_pid
@@ -123,4 +114,3 @@ get_all_rss $check_pid
 #     echo "Stop hogger"
 #     kill -9 $hogger_pid
 # fi
-sleep 2

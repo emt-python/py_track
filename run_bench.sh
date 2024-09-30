@@ -29,7 +29,7 @@ source setup_env.sh $solution
 
 # workloads=("networkx_astar" "networkx_bc" "networkx_bellman" "networkx_bfs_rand" "networkx_bfs"
 #     "networkx_bidirectional" "networkx_kc" "networkx_lc" "networkx_sp" "networkx_tc")
-workloads=("bm_sqlalchemy" "bm_sqlalchemy_new")
+workloads=("bm_sqlalchemy_user_insert")
 mem_splits=("25" "50" "75" "100")
 # mem_splits=("25")
 gen_with_traces() {

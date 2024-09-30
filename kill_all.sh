@@ -34,4 +34,14 @@ pid=$(pgrep -f sqlalchemy)
 if [ -n "$pid" ]; then
     kill -9 "$pid"
 fi
+
+pid=$(pgrep -f perf)
+if [ -n "$pid" ]; then
+    kill -9 "$pid"
+fi
+
+pid=$(pgrep -f pcm)
+if [ -n "$pid" ]; then
+    kill -9 "$pid"
+fi
 echo 3 | sudo tee /proc/sys/vm/drop_caches

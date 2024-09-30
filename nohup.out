@@ -1,17 +1,4 @@
-0
-0
-disabled tpp
-1
-3
-200
-enabled tpp
-0
-1
-enabled autonuma
-0
-0
-disabled tpp
-/home/lyuze/workspace/py_track/run_all.sh: line 6: 99216 Killed                  ./run_bench.sh pypper
+
 0
 0
 disabled tpp
