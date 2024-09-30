@@ -18,4 +18,5 @@ eat
 memeater
 dist
 setup_env.sh
+setup_pcm_col.sh
 *.log

@@ -14,8 +14,8 @@ int main()
     for (int i = 0; i < 4096; i++)
     {
         allocated_mem = realloc(allocated_mem, (allocated_mem_count + 1) * sizeof(void *));
-        // void *mem = (char *)malloc(mb_size);
-        void *mem = (char *)numa_alloc_onnode(mb_size, 1);
+        void *mem = (char *)malloc(mb_size);
+        // void *mem = (char *)numa_alloc_onnode(mb_size, 1);
         if (mem == NULL)
         {
             perror("malloc failed");
