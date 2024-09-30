@@ -71,7 +71,7 @@ Base.metadata.create_all(engine)
 
 # Insert users
 users = [User(name=f'User_{i}') for i in range(1000)]
-session.add_all(users)
+session.bulk_save_objects(users)
 session.commit()
 
 # Insert products
@@ -83,64 +83,65 @@ session.commit()
 
 start_assigning = time.time()
 
-users_from_db = session.query(User).all()
+users = session.query(User).all()
 products = session.query(Product).all()
 
 orders = []
-for _ in range(100000):
+for _ in range(1000000):
     order = Order(
-        user=random.choice(users_from_db),  # Use users from the database
-        product=random.choice(products),    # Assuming products is populated correctly
+        user=random.choice(users),
+        product=random.choice(products),
         quantity=random.randint(1, 10)
     )
     orders.append(order)
 
-session.add_all(orders)
+session.bulk_save_objects(orders)
 session.commit()
 
 assign_time = time.time() - start_assigning
 # print(f"Assign time: {assign_time:.2f} seconds")
 
 
-start_deleting = time.time()
+start_updating = time.time()
 if is_pypper and enable_tracing:
     gc_count_module.start_count_gc_list(
         250_000, "obj_dump.txt", 0, 1024, 1_000_000, 5)
+orders = session.query(Order).all()
+print(len(orders))
+updated_orders = []
+large_list = []
+for order in orders:
+    order.quantity = random.randint(1000, 100000)
+    if order.product is None:
+        order.product = random.choice(products)
+    order.product.price = random.uniform(5000, 20000)
+    # for _ in range(1000):  # Large inner loop for calculation
+    #     value = random.random() ** 2
+    if order.user is None:
+         order.user = random.choice(users)
 
-# Assuming users_from_db is already populated
-users_from_db = session.query(User).all()
+    # Example 3: Build a large in-memory data structure
+    large_list.append({
+        'order_id': order.id,
+        'user_name': order.user.name,
+        'product_name': order.product.name
+    })
 
-deleted_orders = []
+    # Append to batch for update
+    updated_orders.append(order)
 
-# Loop through a set of random users or all users to process multiple queries
-for random_user in random.sample(users_from_db, 1000):  # Select 10 random users, or replace with `users_from_db` to process all users
-    # print(f"Processing orders for user: {random_user.name}")
+    # Introduce a memory-intensive operation by delaying the commit until the batch is large
+    if len(updated_orders) % 5000 == 0:
+        # print(f"Processing batch of {len(updated_orders)} orders")
+        session.bulk_save_objects(updated_orders)
+        session.flush()  # Flush but do not commit yet to increase memory pressure
+        updated_orders.clear()  # Clear the list to free memory for the next batch
 
-    # Query orders associated with the current random user
-    orders_to_delete = session.query(Order).filter(Order.user == random_user).all()
-    
-    for order in orders_to_delete:
-        # Fetch the associated product (if necessary)
-        product = session.query(Product).filter(Product.id == order.product_id).first()
-        
-        # Delete the order
-        session.delete(order)
-        deleted_orders.append(order)
-        
-        # Flush every 500 deletions to avoid keeping too much data in memory
-        if len(deleted_orders) >= 500:
-            session.flush()  # Send the changes to the database
-            deleted_orders.clear()  # Clear the list to free up memory
-    
-    # Optional: Flush the remaining orders for this user
-    session.flush()
-    deleted_orders.clear()
-
-# Commit all the changes after processing all users
 session.commit()
 
 if is_pypper and enable_tracing:
     gc_count_module.close_count_gc_list()
-delete_time = time.time() - start_deleting
-print(f"Delete time: {delete_time:.2f} seconds")
+update_time = time.time() - start_updating
+print(f"Update time: {update_time:.2f} seconds")
+large_list.clear()
 os.remove("user1.db")

@@ -30,12 +30,12 @@ if len(sys.argv) != 2:
     enable_tracing = True
 
 fake = Faker()
-if os.path.exists("complex_database.db"):
-    print("delete old db", file=sys.stderr)
-    os.remove("user2.db")
+if os.path.exists("user1.db"):
+    print("delete user1", file=sys.stderr)
+    os.remove("user1.db")
 # Setup
 Base = declarative_base()
-engine = create_engine('sqlite:///user2.db')
+engine = create_engine('sqlite:///user1.db')
 Session = sessionmaker(bind=engine)
 session = Session()
 
@@ -76,39 +76,49 @@ session.commit()
 
 # Insert products
 products = [Product(name=f'Product_{i}', price=random.uniform(
-    1000, 50000)) for i in range(1000000)]
+    100, 5000)) for i in range(10000)]
 session.bulk_save_objects(products)
 session.commit()
 
 
 start_assigning = time.time()
+
+users = session.query(User).all()
+products = session.query(Product).all()
+
+orders = []
+for _ in range(100000):
+    order = Order(
+        user=random.choice(users),
+        product=random.choice(products),
+        quantity=random.randint(1, 10)
+    )
+    orders.append(order)
+
+session.bulk_save_objects(orders)
+session.commit()
+
+assign_time = time.time() - start_assigning
+# print(f"Assign time: {assign_time:.2f} seconds")
+
+
+start_updating = time.time()
 if is_pypper and enable_tracing:
     gc_count_module.start_count_gc_list(
         250_000, "obj_dump.txt", 0, 1024, 1_000_000, 5)
-
-# Fetch all orders from the database
 orders = session.query(Order).all()
-
-# Keep track of updates without committing in small batches
+print(len(orders))
 updated_orders = []
-large_list = []  # Additional large in-memory data structure
-
-# Update quantities and potentially other fields of all orders
+large_list = []
 for order in orders:
-    # Update quantity to a random value between 1 and 100
-    order.quantity = random.randint(100, 10000)
-
-    # Update product price
-    order.product.price = random.uniform(500, 20000)
-
-    # Simulate memory-intensive operations
-    # Example 1: Add large in-memory operations by creating random strings
-    order.product.name = ''.join(random.choices(
-        'ABCDEFGHIJKLMNOPQRSTUVWXYZ', k=10000))
-
-    # Example 2: Complex calculations
-    for _ in range(1000):  # Large inner loop for calculation
-        value = random.random() ** 2
+    order.quantity = random.randint(1000, 100000)
+    if order.product is None:
+        order.product = random.choice(products)
+    order.product.price = random.uniform(5000, 20000)
+    # for _ in range(1000):  # Large inner loop for calculation
+    #     value = random.random() ** 2
+    if order.user is None:
+         order.user = random.choice(users)
 
     # Example 3: Build a large in-memory data structure
     large_list.append({
@@ -121,20 +131,17 @@ for order in orders:
     updated_orders.append(order)
 
     # Introduce a memory-intensive operation by delaying the commit until the batch is large
-    if len(updated_orders) % 5000 == 0:
-        print(f"Processing batch of {len(updated_orders)} orders")
-        session.bulk_save_objects(updated_orders)
-        session.flush()  # Flush but do not commit yet to increase memory pressure
-        updated_orders.clear()  # Clear the list to free memory for the next batch
+    # if len(updated_orders) % 5 == 0:
+    # print(f"Processing batch of {len(updated_orders)} orders")
+    session.bulk_save_objects(updated_orders)
+    session.flush()  # Flush but do not commit yet to increase memory pressure
+    updated_orders.clear()  # Clear the list to free memory for the next batch
 
-# Commit after all updates
 session.commit()
-# Optional: Clear the large in-memory data structure
-large_list.clear()
-
 
 if is_pypper and enable_tracing:
     gc_count_module.close_count_gc_list()
-assign_time = time.time() - start_assigning
-print(f"Assign time: {assign_time:.2f} seconds")
-os.remove("user2.db")
+update_time = time.time() - start_updating
+print(f"Update time: {update_time:.2f} seconds")
+large_list.clear()
+os.remove("user1.db")
