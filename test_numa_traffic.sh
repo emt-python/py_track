@@ -1,7 +1,7 @@
 #!/bin/bash
 # python_bin=$HOME/workspace/cpython/python
 # python_bin=python3
-# Example: ./test_numa_traffic.sh base normal bm_sqlalchemy with_gc
+# Example: ./test_numa_traffic.sh base pypper bm_sqlalchemy with_gc 1
 env=$1
 source setup_env.sh $2
 workload_name=$3
@@ -103,11 +103,11 @@ $cmd_prefix $python_bin $HOME/workspace/py_track/workload/$workload_file $gc_sta
 check_pid=$!
 
 # gen_bw $check_pid &
-# spawn_perf_stat.sh $check_pid $workload_name &
-# sudo ./spawn_pcm.sh $check_pid $workload_name
+spawn_perf_stat.sh $check_pid $workload_name &
+sudo ./spawn_pcm.sh $check_pid $workload_name
 # sleep 2
-gen_fp $check_pid &
-get_all_rss $check_pid
+# gen_fp $check_pid &
+# get_all_rss $check_pid
 # get_DRAM_size $check_pid
 
 # if [ -n "$enable_pypper" ]; then

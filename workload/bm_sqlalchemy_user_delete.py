@@ -87,7 +87,7 @@ users_from_db = session.query(User).all()
 products = session.query(Product).all()
 
 orders = []
-for _ in range(100000):
+for _ in range(2000000):
     order = Order(
         user=random.choice(users_from_db),  # Use users from the database
         product=random.choice(products),    # Assuming products is populated correctly
@@ -102,18 +102,19 @@ assign_time = time.time() - start_assigning
 # print(f"Assign time: {assign_time:.2f} seconds")
 
 
+
+# Assuming users_from_db is already populated
+users_from_db = session.query(User).all()
+print("start deleting")
+
 start_deleting = time.time()
 if is_pypper and enable_tracing:
     gc_count_module.start_count_gc_list(
         250_000, "obj_dump.txt", 0, 1024, 1_000_000, 5)
-
-# Assuming users_from_db is already populated
-users_from_db = session.query(User).all()
-
 deleted_orders = []
 
 # Loop through a set of random users or all users to process multiple queries
-for random_user in random.sample(users_from_db, 1000):  # Select 10 random users, or replace with `users_from_db` to process all users
+for random_user in random.sample(users_from_db, 40):  # Select 10 random users, or replace with `users_from_db` to process all users
     # print(f"Processing orders for user: {random_user.name}")
 
     # Query orders associated with the current random user

@@ -87,7 +87,7 @@ users = session.query(User).all()
 products = session.query(Product).all()
 
 orders = []
-for _ in range(1000000):
+for _ in range(4000000):
     order = Order(
         user=random.choice(users),
         product=random.choice(products),
@@ -102,15 +102,19 @@ assign_time = time.time() - start_assigning
 # print(f"Assign time: {assign_time:.2f} seconds")
 
 
+orders = session.query(Order).all()
+subset_size = int(len(orders) * 0.2)
+random_orders = random.sample(orders, subset_size)
+print(len(random_orders))
+
 start_updating = time.time()
 if is_pypper and enable_tracing:
     gc_count_module.start_count_gc_list(
         250_000, "obj_dump.txt", 0, 1024, 1_000_000, 5)
-orders = session.query(Order).all()
-print(len(orders))
 updated_orders = []
 large_list = []
-for order in orders:
+# for order in orders:
+for order in random_orders:
     order.quantity = random.randint(1000, 100000)
     if order.product is None:
         order.product = random.choice(products)
@@ -118,7 +122,7 @@ for order in orders:
     # for _ in range(1000):  # Large inner loop for calculation
     #     value = random.random() ** 2
     if order.user is None:
-         order.user = random.choice(users)
+        order.user = random.choice(users)
 
     # Example 3: Build a large in-memory data structure
     large_list.append({

@@ -11,7 +11,8 @@
 #include <stdbool.h>
 #include <pthread.h>
 // #define EMT_RESERVE 630 // this is with obj_temp 16 bytes
-#define EMT_RESERVE 790 // this is with obj_temp 20 bytes
+// #define EMT_RESERVE 790 // this is with obj_temp 20 bytes
+#define EMT_RESERVE 600 // 20 bytes * 31M
 
 #define DRAM_MASK 0
 void **allocated_mem = NULL;
@@ -135,13 +136,13 @@ void print_usage()
     printf("Arguments:\n");
     printf("  <remaining_memory_MB>: The amount of memory (in MB) you want to remain for the workload.\n");
     printf("  <kernel_reserved_MB>: The amount of memory reserved by the kernel (in MB).\n");
-    printf("  [reserve_extra]: If this is \"reserve_extra\", the program will reserve an extra 630MB for EMT metadata.\n");
+    printf("  [reserve_extra]: If this is \"reserve_extra\", the program will reserve extra EMT metadata.\n");
     printf("  [shell_pid]: (Optional) The PID of the shell that invoked memeater. Used to determine when to launch workloads.\n");
 }
 
 // argv[1]: memory (mb) you want to remain (for workload)
 // argv[2]: memory you kernel reserves (obtained thru offline)
-// argv[3]: if == "reserve_extra"; then reserve 630 MB for EMT metadata
+// argv[3]: if == "reserve_extra"; then reserve EMT metadata
 // argv[4]: if not NULL, is the shell pid who invokes the memeater, used to determine when to launch workloads
 int main(int argc, char *argv[])
 {

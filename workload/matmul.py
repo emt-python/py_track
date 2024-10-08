@@ -40,14 +40,15 @@ def generate_matrix(size, max_str_length):
 def matrix_multiply():
     random.seed(1)
     matrix_size = 600
-    # 800: 5000000, 9400000
+    # 600: 400000, 800000
+    # 800: 670000, 1310000
     # max_str_length = 5
     # matrix_A = generate_matrix(matrix_size, max_str_length)
     # matrix_B = generate_matrix(matrix_size, max_str_length)
-    matrix_A = random.sample(range(30000, 5000000), matrix_size * matrix_size)
+    matrix_A = random.sample(range(30000, 400000), matrix_size * matrix_size)
     matrix_A = [matrix_A[i:i+matrix_size]
                 for i in range(0, len(matrix_A), matrix_size)]
-    matrix_B = random.sample(range(5000000, 9400000),
+    matrix_B = random.sample(range(400000, 800000),
                              matrix_size * matrix_size)
     matrix_B = [matrix_B[i:i+matrix_size]
                 for i in range(0, len(matrix_B), matrix_size)]
@@ -56,7 +57,7 @@ def matrix_multiply():
 
     if is_pypper and enable_tracing:
         gc_count_module.start_count_gc_list(
-            250_000, "obj_dump.txt", 0, 1024, 1_000_000, 5)
+            200_000, "obj_dump.txt", 0, 1024, 1_000_000, 5)
     start = time.time()
     for i in range(matrix_size):
         for j in range(matrix_size):

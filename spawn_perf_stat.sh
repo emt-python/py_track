@@ -18,7 +18,7 @@ echo >$output_file
 #     echo "Process with PID $pid does not exist."
 #     exit 1
 # fi
-echo "profiling $workload_name" >>"$output_file"
+# echo "profiling $workload_name" >>"$output_file"
 # Infinite loop to collect perf stat data every second
 while kill -0 $pid 2>/dev/null; do
     # echo "Collecting perf stat at $(date)" >>"$output_file"

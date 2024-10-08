@@ -27,11 +27,12 @@ cmd_prefix="numactl --cpunodebind 0 --preferred 0 -- "
 # fi
 source setup_env.sh $solution
 
-# workloads=("networkx_astar" "networkx_bc" "networkx_bellman" "networkx_bfs_rand" "networkx_bfs"
-#     "networkx_bidirectional" "networkx_kc" "networkx_lc" "networkx_sp" "networkx_tc")
-workloads=("bm_sqlalchemy_user_insert")
+# workloads=("bm_sqlalchemy")
+workloads=("bm_sqlalchemy" "bm_sqlalchemy_new" "bm_sqlalchemy_user_insert" "networkx_astar" "networkx_bellman" "networkx_bfs_rand" "networkx_bfs"
+    "networkx_bidirectional" "networkx_kc" "networkx_lc" "networkx_sp" "networkx_tc")
+# "bm_sqlalchemy_user_update" "bm_sqlalchemy_user_update_v2" "bm_sqlalchemy_user_delete"
 mem_splits=("25" "50" "75" "100")
-# mem_splits=("25")
+# mem_splits=("50")
 gen_with_traces() {
     for wl in "${workloads[@]}"; do
         for split in "${mem_splits[@]}"; do
@@ -44,7 +45,8 @@ gen_with_traces() {
                 pkill -9 memeater
                 echo 3 | sudo tee /proc/sys/vm/drop_caches
 
-                trap '$cmd_prefix $python_bin $SCRIPT with_gc 1 & check_pid=$!; wait $check_pid' SIGUSR1
+                # trap '$cmd_prefix $python_bin $SCRIPT with_gc 1 & check_pid=$!; ./spawn_perf_stat.sh $check_pid $wl &; sudo ./spawn_pcm.sh $check_pid $wl &; wait $check_pid' SIGUSR1
+                trap '$cmd_prefix $python_bin $SCRIPT with_gc 1 & check_pid=$!; ./spawn_perf_stat.sh $check_pid $wl & sudo ./spawn_pcm.sh $check_pid $wl & wait $check_pid' SIGUSR1
                 stdbuf -oL ./memeater $BENCH_DRAM $KERN_RESERVE $EMT_METADATA $$ &
                 MEMAETER_PID=$!
                 wait $MEMAETER_PID

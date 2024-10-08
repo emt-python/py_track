@@ -26,17 +26,17 @@ echo "running in $env"
 echo 1 | sudo tee /proc/sys/vm/drop_caches
 
 cd $HOME/workspace/py_track
-$cmd_prefix $HOME/workspace/cpython/python ./workload/$workload_name.py $gc_stat > damo_out.txt 2>&1 &
+$cmd_prefix $HOME/workspace/cpython/python ./workload/$workload_name.py $gc_stat >damo_out.txt 2>&1 &
 
 check_pid=$!
 echo "workload pid is" $check_pid
 # gen_rss $check_pid "$func"
-sudo $DAMON record -s 10000 $check_pid
+sudo $DAMON record -s 10000 -a 100000 -u 1000000 $check_pid
 #  -o $HOME/workspace/py_track/eos_python_traced.data $check_pid
 # -s 1000 -a 100000 -u 1000000 -n 5000 -m 6000
-sleep 10
+sleep 4
 echo "post processing..."
-sudo $DAMON report heats --abs_addr --heatmap traces/${workload_name}_${gc_stat}_hm.png
+# sudo $DAMON report heats --abs_addr --heatmap traces/${workload_name}_${gc_stat}_hm.png
 
 # sudo $DAMON report heats -i $HOME/workspace/obj_heats/"$func".data --resol 1000 2000 \
 #     --abs_addr --heatmap $HOME/workspace/obj_heats/"$func".png &
