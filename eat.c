@@ -2,10 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <numa.h>
-#include <numaif.h>
+// #include <numa.h>
+// #include <numaif.h>
+#include <signal.h>
 
-int main()
+int main(int argc, char *argv[])
 {
     size_t mb_size = 1024L * 1024L;
     char *memory;
@@ -28,6 +29,14 @@ int main()
 
     printf("Allocated memory, allocated_mem_count: %ld\n", allocated_mem_count);
     int bit = 0;
+    pid_t shell_pid = 0;
+    if (argc > 1)
+    {
+        shell_pid = strtol(argv[1], NULL, 10);
+        printf("Shell PID: %d\n", shell_pid);
+    }
+    if (shell_pid != 0)
+        kill(shell_pid, SIGUSR1);
     while (1)
     {
 

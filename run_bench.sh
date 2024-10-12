@@ -4,35 +4,18 @@ solution=$1
 LOG_FILE=out.txt
 EMT_METADATA="no_extra"
 cmd_prefix="numactl --cpunodebind 0 --preferred 0 -- "
-# if [ "$solution" = "tpp" ]; then
-#     python_bin=$HOME/workspace/cpython_org/python
-#     KERN_RESERVE=0
-#     ./setup_tpp.sh enable
-# elif [ "$solution" = "pypper" ]; then
-#     python_bin=$HOME/workspace/cpython/python
-#     KERN_RESERVE=75
-#     ./setup_tpp.sh disable
-# elif [ "$solution" = "normal" ]; then
-#     python_bin=$HOME/workspace/cpython_org/python
-#     KERN_RESERVE=75
-#     ./setup_tpp.sh disable
-# elif [ "$solution" = "autonuma" ]; then
-#     python_bin=$HOME/workspace/cpython_org/python
-#     KERN_RESERVE=0
-#     ./setup_tpp.sh autonuma
-#     cmd_prefix=""
-# else
-#     echo "Invalid argument for python executable"
-#     exit 1
-# fi
-source setup_env.sh $solution
+launch_memtis_bin=$HOME/workspace/py_track/memtis_scripts/launch_bench
 
-# workloads=("bm_sqlalchemy")
-workloads=("bm_sqlalchemy" "bm_sqlalchemy_new" "bm_sqlalchemy_user_insert" "networkx_astar" "networkx_bellman" "networkx_bfs_rand" "networkx_bfs"
-    "networkx_bidirectional" "networkx_kc" "networkx_lc" "networkx_sp" "networkx_tc")
+source setup_env.sh $solution $$
+
+# workloads=("networkx_astar")
+workloads=("networkx_astar" "networkx_bellman" "networkx_bfs_rand"
+    "networkx_bidirectional" "networkx_kc" "networkx_sp" "bm_sqlalchemy_user_insert")
+# workloads=("bm_sqlalchemy" "bm_sqlalchemy_new" "bm_sqlalchemy_user_insert" "networkx_astar" "networkx_bellman" "networkx_bfs_rand" "networkx_bfs"
+#     "networkx_bidirectional" "networkx_kc" "networkx_lc" "networkx_sp" "networkx_tc")
 # "bm_sqlalchemy_user_update" "bm_sqlalchemy_user_update_v2" "bm_sqlalchemy_user_delete"
 mem_splits=("25" "50" "75" "100")
-# mem_splits=("50")
+# mem_splits=("25")
 gen_with_traces() {
     for wl in "${workloads[@]}"; do
         for split in "${mem_splits[@]}"; do
@@ -45,14 +28,29 @@ gen_with_traces() {
                 pkill -9 memeater
                 echo 3 | sudo tee /proc/sys/vm/drop_caches
 
-                # trap '$cmd_prefix $python_bin $SCRIPT with_gc 1 & check_pid=$!; ./spawn_perf_stat.sh $check_pid $wl &; sudo ./spawn_pcm.sh $check_pid $wl &; wait $check_pid' SIGUSR1
-                trap '$cmd_prefix $python_bin $SCRIPT with_gc 1 & check_pid=$!; ./spawn_perf_stat.sh $check_pid $wl & sudo ./spawn_pcm.sh $check_pid $wl & wait $check_pid' SIGUSR1
-                stdbuf -oL ./memeater $BENCH_DRAM $KERN_RESERVE $EMT_METADATA $$ &
-                MEMAETER_PID=$!
-                wait $MEMAETER_PID
-                echo "killing memeaterr"
-                kill -9 $MEMAETER_PID
+                if [ "$solution" = "memtis" ]; then
+                    BENCH_DRAM=$((BENCH_DRAM + 4096))
+                    sudo ${DIR}/memtis_scripts/set_mem_size.sh htmm 0 ${BENCH_DRAM}
+                    # trap '$cmd_prefix $launch_memtis_bin $python_bin $SCRIPT with_gc & check_pid=$!; wait $check_pid' SIGUSR1
+                    trap "$cmd_prefix $launch_memtis_bin $python_bin $SCRIPT with_gc & check_pid=\$!; wait \$check_pid" SIGUSR1
+                    stdbuf -oL ./eat $$ &
+                    EAT_PID=$!
+                    wait $EAT_PID
+                    echo "killing eats"
+                    kill -9 $EAT_PID
+                else
+                    trap '$cmd_prefix $python_bin $SCRIPT with_gc 1 & check_pid=$!; ./spawn_perf_stat.sh $check_pid $wl & sudo ./spawn_pcm.sh $check_pid $wl & wait $check_pid' SIGUSR1
+                    stdbuf -oL ./memeater $BENCH_DRAM $KERN_RESERVE $EMT_METADATA $$ &
+                    MEMAETER_PID=$!
+                    wait $MEMAETER_PID
+                    echo "killing memeaterr"
+                    kill -9 $MEMAETER_PID
+                fi
                 # ./test_numa_traffic.sh base pypper ${wl} with_gc 1
+
+                if [ "$solution" = "memtis" ]; then
+                    sudo memtis_scripts/set_htmm_memcg.sh htmm $$ disable
+                fi
                 sleep 10
 
                 # echo 3 | sudo tee /proc/sys/vm/drop_caches

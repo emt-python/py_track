@@ -31,7 +31,7 @@ $cmd_prefix $HOME/workspace/cpython/python ./workload/$workload_name.py $gc_stat
 check_pid=$!
 echo "workload pid is" $check_pid
 # gen_rss $check_pid "$func"
-sudo $DAMON record -s 10000 -a 100000 -u 1000000 $check_pid
+sudo $DAMON record -s 10000 -a 100000 -u 1000000 -n 9000 -m 10000 $check_pid
 #  -o $HOME/workspace/py_track/eos_python_traced.data $check_pid
 # -s 1000 -a 100000 -u 1000000 -n 5000 -m 6000
 sleep 4

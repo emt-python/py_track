@@ -3,7 +3,7 @@ import numpy as np
 from multiprocessing import Pool, cpu_count
 
 df1_name = 'obj_dump_sorted.txt'
-df2_name = 'matmul_new.txt'
+df2_name = 'damo_out.txt'
 
 columns_1 = ["timestamp", "addr", "diff0", "diff1",
              "diff2", "diff3", "diff4", "diff5", "diff6", "hotness"]
@@ -13,12 +13,21 @@ columns_2 = ["timestamp", "addr", "temperature"]
 df2 = pd.read_csv(df2_name, sep="\t", header=None, names=columns_2)
 
 
-def find_closest_temperature_v2(row, df2):
-    # if row_number % (len(df1) // 100) == 0:
-    #     print(f"Processing row {row_number + 1} / {len(df1)}")
-    closest_row = df2.iloc[(df2['addr'] - row['addr']).abs().argsort()[:1]]
+# def find_closest_temperature_v2(row, df2):
+#     # if row_number % (len(df1) // 100) == 0:
+#     #     print(f"Processing row {row_number + 1} / {len(df1)}")
+#     # closest_row = df2.iloc[(df2['addr'] - row['addr']).abs().argsort()[:1]]
+#     closest_row = df2.iloc[(df2['addr'] - row['addr']
+#                             ).abs().sort_values(na_position='last').index[:1]]
 
-    return closest_row['temperature'].mean()
+#     return closest_row['temperature'].mean()
+
+
+def find_closest_temperature_v2(row, df2):
+    diff = (df2['addr'] - row['addr']).abs()
+    min_diff = diff.min()
+    closest_rows = df2[diff == min_diff]
+    return closest_rows['temperature'].mean()
 
 
 def process_chunk(chunk, df2):
@@ -37,7 +46,7 @@ def parallel_process(df1, df2, num_chunks=20):
     return result_df
 
 
-df1_result = parallel_process(df1, df2, num_chunks=24)
+df1_result = parallel_process(df1, df2, num_chunks=60)
 
 sorted_file = "obj_dump_real_heat_all.txt"
 df1_result.to_csv(sorted_file, sep='\t', index=False, header=False)
