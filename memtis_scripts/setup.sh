@@ -147,7 +147,7 @@ function func_main() {
     #     ${PINNING} ${DIR}/memtis_scripts/launch_bench ${BENCH_RUN} 2>&1 |
     #     tee ${LOG_DIR}/output.log
     # fi
-    echo "a fake workload" 2>&1
+    # echo "a fake workload" 2>&1
 
     # sudo killall -9 memory_stat.sh
     # cat /proc/vmstat | grep -e thp -e htmm -e pgmig >${LOG_DIR}/after_vmstat.log
