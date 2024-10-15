@@ -7,14 +7,12 @@ cmd_prefix="numactl --cpunodebind 0 --preferred 0 -- "
 
 source setup_env.sh $solution $$
 
-workloads=("networkx_astar")
-# workloads=("networkx_astar" "networkx_bellman" "networkx_bfs_rand"
-#     "networkx_bidirectional" "networkx_kc" "networkx_sp" "bm_sqlalchemy_user_insert")
-# workloads=("bm_sqlalchemy" "bm_sqlalchemy_new" "bm_sqlalchemy_user_insert" "networkx_astar" "networkx_bellman" "networkx_bfs_rand" "networkx_bfs"
-#     "networkx_bidirectional" "networkx_kc" "networkx_lc" "networkx_sp" "networkx_tc")
+# workloads=("bm_sqlalchemy")
+workloads=("networkx_bfs")
+# workloads=("bm_sqlalchemy" "bm_sqlalchemy_new" "bm_sqlalchemy_user_insert" "networkx_astar" "networkx_bellman" "networkx_bfs_rand" "networkx_bfs" "networkx_bidirectional" "networkx_kc" "networkx_lc" "networkx_sp")
 # "bm_sqlalchemy_user_update" "bm_sqlalchemy_user_update_v2" "bm_sqlalchemy_user_delete"
 # mem_splits=("25" "50" "75" "100")
-mem_splits=("25")
+mem_splits=("50")
 gen_with_traces() {
     for wl in "${workloads[@]}"; do
         for split in "${mem_splits[@]}"; do
@@ -28,11 +26,13 @@ gen_with_traces() {
                 echo 3 | sudo tee /proc/sys/vm/drop_caches
 
                 if [ "$solution" = "memtis" ]; then
-                    BENCH_DRAM=$((BENCH_DRAM + 4096))
-                    sudo memtis_scripts/set_mem_size.sh htmm 0 ${BENCH_DRAM}
+		    source setup_env.sh $solution $$
+                    BENCH_DRAM=$((BENCH_DRAM + 2048))
+                    sudo memtis_scripts/set_mem_size.sh htmm 0 ${BENCH_DRAM}MB
+		    cat /sys/fs/cgroup/htmm/memory.htmm_enabled
                     # trap '$cmd_prefix $launch_memtis_bin $python_bin $SCRIPT with_gc & check_pid=$!; wait $check_pid' SIGUSR1
                     trap "$cmd_prefix $CUR_DIR/memtis_scripts/launch_bench $python_bin $SCRIPT with_gc & check_pid=\$!; wait \$check_pid" SIGUSR1
-                    stdbuf -oL $cmd_prefix $CUR_DIR/eat $$ &
+		    stdbuf -oL numactl -N 0 -- $CUR_DIR/eat $$ &
                     EAT_PID=$!
                     wait $EAT_PID
                     echo "killing eats"

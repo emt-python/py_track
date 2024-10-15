@@ -5,12 +5,12 @@ CGROUP_DIR=/sys/fs/cgroup
 BASH_PID=$2
 
 if [ "x$2" == "xremove" ]; then
-    sudo rmdir ${CGROUP_DIR}/${CGROUP_NAME}
-    exit
+	sudo rmdir ${CGROUP_DIR}/${CGROUP_NAME}
+        exit
 fi
 
 if [ ! -d "${CGROUP_DIR}/${CGROUP_NAME}" ]; then
-    sudo mkdir -p ${CGROUP_DIR}/${CGROUP_NAME}
+	sudo mkdir -p ${CGROUP_DIR}/${CGROUP_NAME}
 fi
 
 echo "+memory" | sudo tee ${CGROUP_DIR}/cgroup.subtree_control
@@ -19,6 +19,7 @@ echo "+cpuset" | sudo tee ${CGROUP_DIR}/cgroup.subtree_control
 echo ${BASH_PID} | sudo tee ${CGROUP_DIR}/${CGROUP_NAME}/cgroup.procs
 if [ "x$3" == "xenable" ]; then
     echo "enabled" | sudo tee ${CGROUP_DIR}/${CGROUP_NAME}/memory.htmm_enabled
+    echo "calling enabled!"
     exit
 elif [ "x$3" == "xdisable" ]; then
     echo "disabled" | sudo tee ${CGROUP_DIR}/${CGROUP_NAME}/memory.htmm_enabled

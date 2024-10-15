@@ -5,6 +5,16 @@
 // #include <numa.h>
 // #include <numaif.h>
 #include <signal.h>
+void intensive_memory_operation(void *mem_block, size_t size)
+{
+    unsigned char *block = (unsigned char *)mem_block;
+    for (size_t i = 0; i < size; i++)
+    {
+        unsigned char value = block[i];
+        value = (value + 13) % 256;
+        block[i] = value;
+    }
+}
 
 int main(int argc, char *argv[])
 {
@@ -12,7 +22,7 @@ int main(int argc, char *argv[])
     char *memory;
     void **allocated_mem = NULL;
     size_t allocated_mem_count = 0;
-    for (int i = 0; i < 4096; i++)
+    for (int i = 0; i < 2048; i++)
     {
         allocated_mem = realloc(allocated_mem, (allocated_mem_count + 1) * sizeof(void *));
         void *mem = (char *)malloc(mb_size);
@@ -40,13 +50,17 @@ int main(int argc, char *argv[])
     while (1)
     {
 
-        for (int i = allocated_mem_count - 1; i >= 0; i--)
-        // for (int i = 0; i < allocated_mem_count - 1; i++)
+        for (int i = 0; i < allocated_mem_count; i++)
         {
-            memset(allocated_mem[i], bit, mb_size);
+            int random_index = rand() % allocated_mem_count;
+            intensive_memory_operation(allocated_mem[random_index], mb_size);
         }
-        bit = !bit;
     }
+    for (size_t i = 0; i < allocated_mem_count; i++)
+    {
+        free(allocated_mem[i]);
+    }
+    free(allocated_mem);
 
     // free(memory);
     return 0;
