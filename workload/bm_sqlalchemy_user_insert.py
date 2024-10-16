@@ -111,7 +111,7 @@ print(f"Creating data time: {add_time:.2f} seconds", file=sys.stderr)
 start_assigning = time.time()
 if is_pypper and enable_tracing:
     gc_count_module.start_count_gc_list(
-        250_000, "obj_dump.txt", 0, 1024, 1_000_000, 5)
+        250_000, "obj_dump.txt", 0, 1024, 200_000, 5)
 
 users = session.query(User).all()
 products = session.query(Product).all()

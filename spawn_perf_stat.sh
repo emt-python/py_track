@@ -25,7 +25,7 @@ while kill -0 $pid 2>/dev/null; do
 
     # perf stat -p $pid -e dTLB-loads,dTLB-load-misses,LLC-loads,LLC-load-misses,LLC-stores -- sleep 1 2>>"$output_file"
     temp_file=$(mktemp)
-    perf stat -p $pid -e cycles,instructions,LLC-loads,LLC-load-misses,LLC-stores -- sleep 1 2>"$temp_file" && mv "$temp_file" "$output_file"
+    sudo perf stat -p $pid -e cycles,instructions,LLC-loads,LLC-load-misses,LLC-stores -- sleep 1 2>"$temp_file" && mv "$temp_file" "$output_file"
     # perf stat -p $pid -e cycles,instructions,LLC-loads,LLC-load-misses,LLC-stores -- sleep 1 2>>"$output_file"
     # sudo perf stat -e cycles,instructions,LLC-loads,LLC-load-misses,LLC-stores -a sleep 1 2>>"$output_file"
 
